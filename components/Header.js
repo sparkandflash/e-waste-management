@@ -1,7 +1,7 @@
 
 
 import {
-    FormControl, Flex, Spacer, Input, FormLabel, Text, Button, Box, HStack
+    FormControl, Flex, Spacer, Input, FormLabel, Text, Button, Box, HStack, VStack
 } from "@chakra-ui/react"
 
 import ServiceSearch from '../components/ServiceSearch';
@@ -13,8 +13,15 @@ function Header() {
     return (
 
         <header>
-            <Flex p={2}>
-                <Button color="blue.100" bg="blue.500" onClick={() => router.push('/')}>Home</Button>
+            <Flex p={5}>
+                <HStack>
+              
+                 
+                <Button color="blue.100" bg="blue.500" onClick={() => router.push('/')}>dashboard</Button>
+
+                <Button color="blue.100" bg="blue.500" onClick={() => router.push('/myProfile')}>my profile</Button>
+                <Button color="blue.100" bg="blue.500" onClick={() => router.push('/citizen')}>add item</Button>
+                </HStack>
                 <Spacer />
                 <ServiceSearch />
             </Flex>
