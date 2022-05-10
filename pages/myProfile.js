@@ -1,4 +1,4 @@
-import { Box, Image,   useToast,Button, Container, Heading, VStack, Spacer, Center, Tag, Text } from '@chakra-ui/react'
+import { Box, Image, useToast, Button, Container, Heading, VStack, Center, Tag, Text } from '@chakra-ui/react'
 import Header from '../components/Header';
 import { useEffect, useState } from "react";
 import { connectWallet, getCurrentWalletConnected } from "../utils/interact.js";
@@ -15,24 +15,24 @@ export default function MyProfile() {
   const [walletAddress, setWallet] = useState("");
   const [status, setStatus] = useState("");
   const [constatus, setConstatus] = useState(false);
-  const [role, setRole] = useState(false);
+  const [mintrole, setMintRole] = useState(true);
 
   const connectWalletPressed = async () => {
-    try{
-    const walletResponse = await connectWallet();
-    setStatus(walletResponse.status);
-    setWallet(walletResponse.address);
-    setConnected(true);
+    try {
+      const walletResponse = await connectWallet();
+      setStatus(walletResponse.status);
+      setWallet(walletResponse.address);
+      setConnected(true);
     }
     catch (err) {
-setConstatus(false);
-addToast({
-  title: "Alert!.",
-  description: "you are on wrong network, please connect to rinkeby",
-  status: "warning",
-  duration: 9000,
-  isClosable: true,
-})
+      setConstatus(false);
+      addToast({
+        title: "Alert!.",
+        description: "you are on wrong network, please connect to rinkeby",
+        status: "warning",
+        duration: 9000,
+        isClosable: true,
+      })
     }
   };
   useEffect(async () => {
@@ -41,7 +41,7 @@ addToast({
     setStatus(status);
     window.sessionStorage.setItem('address', walletAddress);
     window.localStorage.setItem('status', constatus);
-    window.localStorage.setItem('role', role);
+    window.localStorage.setItem('role', mintrole);
     console.log(walletAddress);
 
   }, []);
@@ -63,7 +63,7 @@ addToast({
           setWallet("");
           setStatus("🦊 Connect to Metamask using the top right button.");
           window.localStorage.clear();
-          setRole(false);
+
         }
       });
     } else {
@@ -71,28 +71,34 @@ addToast({
         <p>
           {" "}
           🦊{" "}
-         
+
         </p>
       );
     }
   }
   //if user is unregistered, that is, do an if else to check whther wallet address is stored in db or not
- 
 
- 
-    
-  
+
+
+
+
 
   // load data from chain/db for below variables
-  let Registred = true
-  let user = "some-nice-citizen"
-   role = "citizen"
-  let address = "some city/village"
-  let noOfowned = 2
-  let itemsCreated = "3"
-  let itemsSold = "2"
-  let itemsBought = "5"
-  if (Registred != true) {  
+  let Registred = true;
+  const user = {
+    address: "some city/village",
+    name: "some-nice-citizen",
+    role: "Citizen",
+    noOfowned: 2,
+    itemsCreated: 3,
+    itemsSold: 2,
+    itemsBought: 5,
+  }
+
+
+
+
+  if (Registred != true) {
     router.push('/register')
   }
 
@@ -109,15 +115,15 @@ addToast({
                   borderRadius='full'
                   boxSize='150px'
                   src='https://cdn.discordapp.com/avatars/590741326786723868/bdc2ac3200d9f7b95fb7a436d6ec3330.png?size=1024' alt='Dan Abramov' />
-                <Text fontSize='md'>{user}</Text>
-                <Tag>{role}</Tag>
+                <Text fontSize='md'>{user.name}</Text>
+                <Tag>{user.role}</Tag>
 
 
               </VStack>
 
             </Center>
 
-            <Text borderRadius='lg' borderWidth='1px' padding=" 10px" fontSize='md'>wallet address: {walletAddress}<br />physical address : {address}</Text>
+            <Text borderRadius='lg' borderWidth='1px' padding=" 10px" fontSize='md'>wallet address: {walletAddress}<br />physical address : {user.address}</Text>
           </Box>
           <Container p={3}>
             <Center>
@@ -126,7 +132,7 @@ addToast({
                   items
                 </Heading>
                 <Box>
-                  <Text>Items owned: {noOfowned} Items created: {itemsCreated} Items sold: {itemsSold} Items bought: {itemsBought}</Text>
+                  <Text>Items owned: {user.noOfowned} Items created: {user.itemsCreated} Items sold: {user.itemsSold} Items bought: {user.itemsBought}</Text>
                 </Box>
               </VStack>
 
@@ -152,7 +158,7 @@ addToast({
               </Text>
               <Center h="40">
                 <VStack>
-                 
+
 
                   <Button size="lg" onClick={() => connectWalletPressed()}>Connect</Button>
                 </VStack>
@@ -168,9 +174,7 @@ addToast({
 
           </Box>
 
-          <Box>
-  a
-</Box>
+
         </Container>
 
 

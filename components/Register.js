@@ -1,8 +1,13 @@
 
 import { Container, Checkbox, HStack, CheckboxGroup, Input, Button, VStack, Text, Box, Center } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-function Register() {
-    const walletAddress = window.sessionStorage.getItem('address');
+function Register () {
+ 
+    const walletAddress ="";
+    useEffect(() => {
+walletAddress=  window.sessionStorage.getItem('address');
+    })
+   
     
 console.log(walletAddress);
 
