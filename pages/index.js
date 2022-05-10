@@ -10,7 +10,7 @@ import {
 
 import NFTMarketplace from '../artifacts/contracts/NFTMarketplace.sol/NFTMarketplace.json'
 
-export default function CreatorDashboard() {
+export default function Home() {
   const addToast = useToast();
   const [nfts, setNfts] = useState([])
   const [loadingState, setLoadingState] = useState('not-loaded')
