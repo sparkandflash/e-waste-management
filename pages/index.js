@@ -14,9 +14,7 @@ export default function CreatorDashboard() {
   const addToast = useToast();
   const [nfts, setNfts] = useState([])
   const [loadingState, setLoadingState] = useState('not-loaded')
-  useEffect(() => {
-    loadNFTs()
-  }, [])
+  
   async function loadNFTs() {
     try{
     const web3Modal = new Web3Modal({
@@ -57,6 +55,9 @@ export default function CreatorDashboard() {
     })
   }
   }
+  useEffect(() => {
+    loadNFTs()
+  }, [])
   if (loadingState === 'loaded' && !nfts.length) return (<div><Header /><h1>No Items listed</h1></div>)
 
   return (
@@ -69,7 +70,7 @@ export default function CreatorDashboard() {
             nfts.map((nft, i) => (
               <Stack direction={['column', 'row']} spacing='24px'>
                   
-               <Box key={i} w="250px" bg='gray.300' padding={3} m={2} rounded={6}  >
+               <Box  w="250px" bg='gray.300' padding={3} m={2} rounded={6}  >
                   <Image rounded={5} boxSize='250px'
                     objectFit='cover' src={nft.image} />
                   <Text color='black.500' padding={3}>Price - {nft.price} eth </Text>
