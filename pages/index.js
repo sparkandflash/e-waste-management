@@ -66,11 +66,12 @@ export default function CreatorDashboard() {
       <Box padding={5}>
         <Heading padding='12px' size='md' >Items listed by citizens:</Heading>
         <Box rounded={6} border='1px' borderColor='gray.300' padding='12px'>
+        <Stack direction={['column', 'row']} spacing='24px'>
           {
             nfts.map((nft, i) => (
-              <Stack direction={['column', 'row']} spacing='24px'>
+             
                   
-               <Box  w="250px" bg='gray.300' padding={3} m={2} rounded={6}  >
+               <Box key={i} w="250px" bg='gray.300' padding={3} m={2} rounded={6}  >
                   <Image rounded={5} boxSize='250px'
                     objectFit='cover' src={nft.image} />
                   <Text color='black.500' padding={3}>Price - {nft.price} eth </Text>
@@ -78,12 +79,13 @@ export default function CreatorDashboard() {
                   <Text isTruncated color='black.500' >owner- {nft.owner}  </Text>
                 </Box>
               
-             </Stack>
+            
                 
 
            
             ))
           }
+           </Stack>
         </Box>
       </Box>
     </div>
