@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
-import {  Text, Stack, Heading, useToast, Box, Image } from "@chakra-ui/react";
+import {  Text, Stack, Heading, useToast, Box, Button, Image } from "@chakra-ui/react";
 import axios from 'axios'
 import Web3Modal from 'web3modal'
 import Header from '../components/Header';
@@ -17,17 +17,10 @@ export default function Home() {
   
   async function loadNFTs() {
     try{
-    const web3Modal = new Web3Modal({
-      network: 'mainnet',
-      cacheProvider: true,
-    })
-    const connection = await web3Modal.connect()
-    const provider = new ethers.providers.Web3Provider(connection)
-    const signer = provider.getSigner()
-
-    const contract = new ethers.Contract(marketplaceAddress, NFTMarketplace.abi, signer)
-    const data = await contract.fetchItemsListed()
-
+      const provider = new ethers.providers.JsonRpcProvider("https://speedy-nodes-nyc.moralis.io/255baec1b14ec7a2a5f7f063/eth/rinkeby")
+      const contract = new ethers.Contract(marketplaceAddress, NFTMarketplace.abi, provider)
+      const data = await contract.fetchMarketItems()
+  
     const items = await Promise.all(data.map(async i => {
       const tokenUri = await contract.tokenURI(i.tokenId)
       const meta = await axios.get(tokenUri)
@@ -38,6 +31,8 @@ export default function Home() {
         seller: i.seller,
         owner: i.owner,
         image: meta.data.image,
+        name: meta.data.name,
+        description: meta.data.description,
       }
       return item
     }))
@@ -55,6 +50,22 @@ export default function Home() {
     })
   }
   }
+  async function buyNft(nft) {
+    /* needs the user to sign the transaction, so will use Web3Provider and sign it */
+    const web3Modal = new Web3Modal()
+    const connection = await web3Modal.connect()
+    const provider = new ethers.providers.Web3Provider(connection)
+    const signer = provider.getSigner()
+    const contract = new ethers.Contract(marketplaceAddress, NFTMarketplace.abi, signer)
+
+    /* user will be prompted to pay the asking proces to complete the transaction */
+    const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')   
+    const transaction = await contract.createMarketSale(nft.tokenId, {
+      value: price
+    })
+    await transaction.wait()
+    loadNFTs()
+  }
   useEffect(() => {
     loadNFTs()
   }, [])
@@ -69,19 +80,24 @@ export default function Home() {
         <Stack direction={['column', 'row']} spacing='24px'>
           {
             nfts.map((nft, i) => (
-             
+             <div>
                   
-               <Box key={i} w="250px" bg='gray.300' padding={3} m={2} rounded={6}  >
-                  <Image rounded={5} boxSize='250px'
-                    objectFit='cover' src={nft.image} />
-                  <Text color='black.500' padding={3}>Price - {nft.price} eth </Text>
-                  <Text isTruncated color='black.500' >seller - {nft.seller}  </Text>
-                  <Text isTruncated color='black.500' >owner- {nft.owner}  </Text>
+               <Box key={i} w="250px" bg='gray.300' padding={3} m={2} rounded={6}>
+                <Image rounded={5} boxSize='250px'
+                  objectFit='cover' src={nft.image} />
+                <Text color='black.500' padding={3}>Price - {nft.price} eth </Text>
+                <Text isTruncated color='black.500'>seller - {nft.seller}  </Text>
+                <Text isTruncated color='black.500'>owner- {nft.owner}  </Text>
+                <p color='black.500'>owner- {nft.description}  </p>
+
+              </Box><Box>
+                  <Button key={i} onClick={() => buyNft(nft)}>
+buy
+                  </Button>
                 </Box>
-              
             
                 
-
+                </div>
            
             ))
           }
