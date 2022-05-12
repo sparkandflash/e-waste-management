@@ -1,41 +1,12 @@
-## Full stack NFT marketplace built with Polygon, Solidity, IPFS, & Next.js
+## Full stack NFT marketplace built with rinkeby, Solidity, IPFS, & Next.js
 
-![Header](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/pfofv47dooojerkmfgr4.png)
+original project: https://github.com/dabit3/polygon-ethereum-nextjs-marketplace)
 
-This is the codebase to go along with tbe blog post [Building a Full Stack NFT Marketplace on Ethereum with Polygon](https://dev.to/dabit3/building-scalable-full-stack-apps-on-ethereum-with-polygon-2cfb)
 
-### Running this project
+uses ethers, chakra ui, nextjs. solidity NFT Marketplace contract.
 
-#### Gitpod
-
-To deploy this project to Gitpod, follow these steps:
-
-1. Click this link to deploy
-
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#github.com/dabit3/polygon-ethereum-nextjs-marketplace)
-
-2. Import the RPC address given to you by GitPod into your MetaMask wallet
-
-This endpoint will look something like this:
-
-```
-https://8545-copper-swordtail-j1mvhxv3.ws-eu18.gitpod.io/
-```
-
-The chain ID should be 1337. If you have a localhost rpc set up, you may need to overwrite it.
-
-![MetaMask RPC Import](wallet.png)
-
-#### Local setup
-
+https://sparkandflash.notion.site/final-year-project-db550c28dce34924b1a6bc741576db33
 To run this project locally, follow these steps.
-
-1. Clone the project locally, change into the directory, and install the dependencies:
-
-```sh
-git clone https://github.com/dabit3/polygon-ethereum-nextjs-marketplace.git
-
-cd polygon-ethereum-nextjs-marketplace
 
 # install using NPM or Yarn
 npm install
