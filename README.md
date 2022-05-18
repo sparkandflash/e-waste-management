@@ -1,6 +1,6 @@
 ## Full stack NFT marketplace built with rinkeby, Solidity, IPFS, & Next.js
 
-original project: https://github.com/dabit3/polygon-ethereum-nextjs-marketplace)
+
 
 
 uses ethers, chakra ui, nextjs. solidity NFT Marketplace contract.
