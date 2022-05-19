@@ -17,7 +17,7 @@ export default function Home() {
 
   async function loadNFTs() {
     try {
-      const provider = new ethers.providers.JsonRpcProvider("https://speedy-nodes-nyc.moralis.io/255baec1b14ec7a2a5f7f063/eth/rinkeby")
+      const provider = new ethers.providers.JsonRpcProvider("https://rinkeby.infura.io/v3/fafcbeac5aeb44218662cb082acbdc66")
       const contract = new ethers.Contract(marketplaceAddress, NFTMarketplace.abi, provider)
       const data = await contract.fetchMarketItems()
 
