@@ -17,7 +17,7 @@ export default function Home() {
 
   async function loadNFTs() {
     try {
-      const provider = new ethers.providers.JsonRpcProvider("https://speedy-nodes-nyc.moralis.io/255baec1b14ec7a2a5f7f063/eth/rinkeby")
+      const provider = new ethers.providers.JsonRpcProvider("https://rinkeby.infura.io/v3/fafcbeac5aeb44218662cb082acbdc66")
       const contract = new ethers.Contract(marketplaceAddress, NFTMarketplace.abi, provider)
       const data = await contract.fetchMarketItems()
 
@@ -75,21 +75,22 @@ export default function Home() {
     <div>
       <Header />
       <Box padding={5}>
-        <Heading padding='12px' size='md' >Items listed by citizens:</Heading>
-        <Box rounded={6} border='1px' borderColor='gray.300' padding='12px'>
+        
+        <Box rounded={6} border='1px' borderColor='gray.300' padding='15px'>
+        
           <Stack direction={['column', 'row']} spacing='24px'>
             {
               nfts.map((nft, i) => (
                 <div key={i}>
 
-                  <Box key={i} w="250px" bg='gray.300' padding={3} m={2} rounded={6}>
+                  <Box key={i} w="fit-content" bg='gray.300' padding={3} m={1} rounded={6}>
 
-                    <Box key={i} bg='gray.700' p={3} m={3} rounded={3}>
-                      <Image rounded={5} boxSize='250px'
+                    <Box key={i} w="280px" bg='gray.700' p={1} marginBottom='12px' rounded={6}>
+                      <Image rounded={6} boxSize='280px'
                         objectFit='cover' src={nft.image} />
                     </Box>
                     <Spacer key={i}/>
-                    <Box key={i} bg='gray.100' p={3} rounded={6}>
+                    <Box width='280px' key={i} bg='gray.100' p={4} rounded={6}>
                       <Text key={i} color='black.500'> {nft.name}  </Text>
                       <p key={i} color='black.500'>desc- {nft.description}  </p>
 
@@ -97,15 +98,16 @@ export default function Home() {
                       <Text key={i} isTruncated color='black.500'>owner- {nft.owner}  </Text>
                       <Text key={i} color='black.500' padding={1}>Price - {nft.price} eth </Text>
                     </Box>
-
-
-
-                  </Box>
-                  <Box key={i}>
+                   
+                    <Box marginTop='10px' key={i}>
                     <Button key={i} onClick={() => buyNft(nft)}>
                       buy
                     </Button>
                   </Box>
+
+
+                  </Box>
+                  
 
 
                 </div>

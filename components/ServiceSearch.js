@@ -18,7 +18,7 @@ function ServiceSearch() {
                 <FormControl>
                     <HStack>
                         <Input size="sm" rounded="9" variant="outline" placeholder="0x...." id="name" name="name" type="text" />
-                        <Button size="sm" type="submit" bg="blue.500" variant="solid" color="blue.100" >search</Button></HStack>
+                        <Button size="sm" type="submit" colorScheme="blue" variant="solid" >search</Button></HStack>
 
                 </FormControl>
 

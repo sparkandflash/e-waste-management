@@ -150,7 +150,7 @@ export default function MyProfile() {
   if (Registred != true) {
     router.push('/register')
   }
-  if (loadingState === 'loaded' && !nfts.length) return (<h1>No NFTs owned</h1>)
+  if (loadingState === 'loaded' && !nfts.length) return (<h1><Header/> No NFTs owned</h1>)
 
   return (
     <div>
