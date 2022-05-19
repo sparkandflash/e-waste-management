@@ -16,8 +16,8 @@ module.exports = {
       accounts: [`${MUMBAI_PRIVATE_KEY}`]
     },*/
     rinkeby: {
-      url: "https://eth-rinkeby.alchemyapi.io/v2/99XV1riy2HBdSJked8AEFU7XvneMQf_A", //Infura url with projectId
-      accounts: [process.env.privateKey] // add the account that will deploy the contract (private key)
+      url: "https://speedy-nodes-nyc.moralis.io/255baec1b14ec7a2a5f7f063/eth/rinkeby", //Infura url with projectId
+      accounts: [`6da9edab8ab983e89a98a42f4932798683d7c3b78b03d0abf443ff31cc72daa3`] // add the account that will deploy the contract (private key)
      },
     /*
     matic: {

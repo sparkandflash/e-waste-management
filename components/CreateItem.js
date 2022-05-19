@@ -1,4 +1,4 @@
-import { Checkbox, HStack, CheckboxGroup, Input, Button, VStack, Text, Box, Center } from "@chakra-ui/react";
+import { Textarea, Input, Button, Image, VStack, Text, Box, Center } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
 import { ethers } from 'ethers'
@@ -75,47 +75,56 @@ function CreateItem() {
 
 
 
-            <Box m="auto" shadow="lg" p={4} opacity="90%" blur="3px" bg="blue.500" rounded="10px" h="450px">
+            <Box m="auto" shadow="lg" p={4} opacity="90%" blur="3px" bg="blue.500" rounded="10px" h="max-content">
 
-                <Box h="300px" p={4}>
+               
 
                     <Text color="blue.100" fontSize="2xl" fontWeight="bold" align="center">
                         Hello citizen!
                     </Text>
-                    <Center height="300">
+                    <Center height='max-content'>
                         <VStack>
-                            <Text color="blue.200">wallet address:  </Text>
+
                             <form>
-                                <Text color="blue.50" fontWeight="bold" mb='8px'>Item name</Text>
+                                <Text color="blue.50" fontWeight="bold" mb='8px'>Item name:</Text>
                                 <Input
                                     placeholder="Asset Name"
-                                    
+
                                     onChange={e => updateFormInput({ ...formInput, name: e.target.value })}
                                 />
-                                <Text color="blue.50" fontWeight="bold" mb='8px'>description</Text>
-                                <textarea
+                                <Text color="blue.50" fontWeight="bold" mb='8px'>description:</Text>
+                                <Textarea
+
                                     placeholder="Asset Description"
-                                    
+
                                     onChange={e => updateFormInput({ ...formInput, description: e.target.value })}
                                 />
+                                <Text color="blue.50" fontWeight="bold" mb='8px'>price:</Text>
                                 <Input
                                     placeholder="Asset Price in Eth"
-                                    
+
                                     onChange={e => updateFormInput({ ...formInput, price: e.target.value })}
                                 />
-                                <Input
-                                    type="file"
-                                    name="Asset"
-                                   
-                                    onChange={onChange}
-                                />
-                                {
-                                    fileUrl && (
-                                        <img  width="350" src={fileUrl} />
-                                    )
-                                }
-                                <Text color="blue.50" fontWeight="bold" mb='8px'>item Picture</Text>
-                              
+                                <Box p={2} width='fit-content'>
+                                    <Text color="blue.50" fontWeight="bold" mb='8px'>upload file</Text>
+                                    <Input
+                                        type="file"
+                                        name="Asset"
+
+                                        onChange={onChange}
+                                    />
+                                    <Text color="blue.50" fontWeight="bold" mb='8px'>item Picture:</Text>
+                                    {
+                                        fileUrl && (
+                                            <Image borderRadius={6} boxSize='350px'
+                                                objectFit='cover'
+                                                src={fileUrl} />
+                                        )
+                                    }
+                                </Box>
+
+
+
                                 <Button onClick={listNFTForSale} size="md">submit</Button>
                             </form>
                         </VStack>
@@ -126,7 +135,7 @@ function CreateItem() {
 
 
 
-            </Box>
+         
 
 
         </div>
