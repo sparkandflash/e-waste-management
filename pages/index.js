@@ -80,7 +80,7 @@ export default function Home() {
           <Stack direction={['column', 'row']} spacing='24px'>
             {
               nfts.map((nft, i) => (
-                <div>
+                <div key={i}>
 
                   <Box key={i} w="250px" bg='gray.300' padding={3} m={2} rounded={6}>
 
@@ -88,14 +88,14 @@ export default function Home() {
                       <Image rounded={5} boxSize='250px'
                         objectFit='cover' src={nft.image} />
                     </Box>
-                    <Spacer />
+                    <Spacer key={i}/>
                     <Box key={i} bg='gray.100' p={3} rounded={6}>
-                      <Text color='black.500'> {nft.name}  </Text>
-                      <p color='black.500'>desc- {nft.description}  </p>
+                      <Text key={i} color='black.500'> {nft.name}  </Text>
+                      <p key={i} color='black.500'>desc- {nft.description}  </p>
 
-                      <Text isTruncated color='black.500'>seller - {nft.seller}  </Text>
-                      <Text isTruncated color='black.500'>owner- {nft.owner}  </Text>
-                      <Text color='black.500' padding={1}>Price - {nft.price} eth </Text>
+                      <Text key={i} isTruncated color='black.500'>seller - {nft.seller}  </Text>
+                      <Text key={i} isTruncated color='black.500'>owner- {nft.owner}  </Text>
+                      <Text key={i} color='black.500' padding={1}>Price - {nft.price} eth </Text>
                     </Box>
 
 
