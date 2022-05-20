@@ -164,7 +164,7 @@ export default function MyProfile() {
                 <Image
                   borderRadius='full'
                   boxSize='150px'
-                  src='https://cdn.discordapp.com/avatars/590741326786723868/bdc2ac3200d9f7b95fb7a436d6ec3330.png?size=1024' alt='Dan Abramov' />
+                  src='https://imgs.search.brave.com/opYbvWl31hdvDMn85MJetB9SEe0ylm-8htxINxnAyks/rs:fit:400:225:1/g:ce/aHR0cHM6Ly90c2Uz/Lm1tLmJpbmcubmV0/L3RoP2lkPU9JUC5m/dndwWl9YTkh5bUhq/bkVuTjlqTkdRQUFB/QSZwaWQ9QXBp' alt='Dan Abramov' />
                 <Text fontSize='md'>{user.name}</Text>
                 <Tag>{user.role}</Tag>
 
