@@ -21,6 +21,7 @@ function Header() {
                 <Button size='sm' colorScheme="blue" onClick={() => router.push('/')}>home</Button>
                 <Button size='sm' colorScheme="blue" onClick={() => router.push('/myProfile')}>my profile</Button>
                 <Button size='sm' colorScheme="blue" onClick={() => router.push('/citizen')}>add item</Button>
+                <Button size='sm' colorScheme="blue" onClick={() => router.push('/register')}>register</Button>
                 </Stack>
                 
                 
