@@ -29,18 +29,7 @@ console.log(walletAddress);
                             
                                 <Text color="blue.50" fontWeight="bold" mb='8px'>Username</Text>
                                 <Input />
-                                <CheckboxGroup color="white" colorScheme='white' >
-                                    <HStack>
-
-                                        <Checkbox >
-                                            <Text color="blue.50" mb='8px'>citizen</Text>
-                                        </Checkbox>
-                                        <Checkbox >
-                                            <Text color="blue.50" mb='8px'>user</Text>
-                                        </Checkbox>
-                                    </HStack>
-                                </CheckboxGroup>
-                                <Text color="blue.50" fontWeight="bold" mb='8px'>user address:</Text>
+                                 <Text color="blue.50" fontWeight="bold" mb='8px'>user address:</Text>
                                 <Textarea
 
 
