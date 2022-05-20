@@ -95,7 +95,7 @@ export default function Home() {
                       <p key={i} color='black.500'>desc- {nft.description}  </p>
 
                       <Text key={i} isTruncated color='black.500'>seller - {nft.seller}  </Text>
-                      <Text key={i} isTruncated color='black.500'>owner- {nft.owner}  </Text>
+                      
                       <Text key={i} color='black.500' padding={1}>Price - {nft.price} eth </Text>
                     </Box>
                    
