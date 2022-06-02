@@ -1,5 +1,9 @@
-import { Box, Image, useToast, Button, Spacer, Container, Heading, VStack, Center, Tag, Text } from '@chakra-ui/react'
+import {
+  Box, Image, Modal,
+  useToast, Button, Spacer, Container, Heading, VStack, Center, Tag, Text
+} from '@chakra-ui/react'
 import Header from '../components/Header';
+
 import { ethers } from 'ethers';
 import axios from 'axios'
 import Web3Modal from 'web3modal';
@@ -16,6 +20,7 @@ import NFTMarketplace from '../artifacts/contracts/NFTMarketplace.sol/NFTMarketp
 
 
 export default function MyProfile() {
+
   const addToast = useToast();
   const router = useRouter();
   const [nfts, setNfts] = useState([])
@@ -23,8 +28,14 @@ export default function MyProfile() {
   const [connected, setConnected] = useState("");
   const [walletAddress, setWallet] = useState("");
   const [status, setStatus] = useState("");
-  const [constatus, setConstatus] = useState(false);
   const [mintrole, setMintRole] = useState(true);
+  useEffect(async () => {
+   
+    window.sessionStorage.setItem('address', walletAddress);
+    connected = window.localStorage.getItem('constatus');
+
+  }, []);
+
 
   async function loadNFTs() {
     const web3Modal = new Web3Modal({
@@ -57,10 +68,8 @@ export default function MyProfile() {
     setNfts(items)
     setLoadingState('loaded')
   }
-  function listNFT(nft) {
-    console.log('nft:', nft)
-    router.push(`/resell-nft?id=${nft.tokenId}&tokenURI=${nft.tokenURI}`)
-  }
+
+
   const connectWalletPressed = async () => {
     try {
       const walletResponse = await connectWallet();
@@ -84,7 +93,7 @@ export default function MyProfile() {
     setWallet(address)
     setStatus(status);
     window.sessionStorage.setItem('address', walletAddress);
-    window.localStorage.setItem('status', constatus);
+    window.localStorage.setItem('constatus', "true");
     window.localStorage.setItem('role', mintrole);
     console.log(walletAddress);
 
@@ -122,7 +131,7 @@ export default function MyProfile() {
     }
   }
   function viewItem(nft) {
-
+    console.log('nft:', nft)
     router.push(`/itemProfile?id=${nft.tokenId}&tokenURI=${nft.tokenURI}`)
   }
   //if user is unregistered, that is, do an if else to check whther wallet address is stored in db or not
@@ -150,7 +159,7 @@ export default function MyProfile() {
   if (Registred != true) {
     router.push('/register')
   }
-  if (loadingState === 'loaded' && !nfts.length) return (<h1><Header/> No NFTs owned</h1>)
+  if (loadingState === 'loaded' && !nfts.length) return (<h1><Header /> No NFTs owned</h1>)
 
   return (
     <div>
@@ -192,35 +201,33 @@ export default function MyProfile() {
             {
               nfts.map((nft, i) => (
                 <div key={i}>
-<Box bg='gray.200' w='fit-content' rounded={3} p={2}>
-                  <Box key={i} w="250px" bg='gray.300' padding={3} m={2} rounded={6}>
+                  <Box  bg='gray.200' w='fit-content' rounded={3} p={2}>
+                    <Box  w="250px" bg='gray.300' padding={3} m={2} rounded={6}>
 
-                    <Box key={i} bg='gray.700' p={3} m={3} rounded={3}>
-                      <Image key={i} rounded={5} boxSize='250px'
-                        objectFit='cover' src={nft.image} />
+                      <Box  bg='gray.700' p={3} m={3} rounded={3}>
+                        <Image rounded={5} boxSize='250px'
+                          objectFit='cover' src={nft.image} />
+                      </Box>
+                      <Spacer />
+                      <Box bg='gray.100' p={3} rounded={6}>
+                        <Text color='black.500'> {nft.name}  </Text>
+                        <p color='black.500'>desc- {nft.description}  </p>
+
+
+                        <Text isTruncated color='black.500'>owner- you  </Text>
+                        <Text color='black.500' padding={1}>Price - {nft.price} eth </Text>
+                      </Box>
+
+
+
                     </Box>
-                    <Spacer key={i} />
-                    <Box key={i} bg='gray.100' p={3} rounded={6}>
-                      <Text key={i} color='black.500'> {nft.name}  </Text>
-                      <p key={i} color='black.500'>desc- {nft.description}  </p>
+                    <Box >
 
-                  
-                      <Text key={i} isTruncated color='black.500'>owner- you  </Text>
-                      <Text key={i} color='black.500' padding={1}>Price - {nft.price} eth </Text>
+
+                      <Button onClick={() => viewItem(nft)}>
+                        view
+                      </Button>
                     </Box>
-
-
-
-                  </Box>
-                  <Box key={i}>
-                    <Button key={i} m={3} onClick={() => listNFT(nft)}>
-                      resell
-                    </Button>
-                  
-                    <Button key={i} onClick={() => viewItem(nft)}>
-                      view
-                    </Button>
-                  </Box>
                   </Box>
 
                 </div>
@@ -228,9 +235,6 @@ export default function MyProfile() {
               ))
             }
 
-            {
-              // display all items owned by the user
-            }
           </Container>
         </Box>
         :

@@ -135,7 +135,13 @@ contract NFTMarketplace is ERC721URIStorage {
             tokenId
         );
     }
-
+  function transferToken(uint256 tokenId, address receiver) public payable {
+        _transfer(
+            msg.sender,
+            receiver,
+            tokenId
+        );
+    }
     /* Creates the sale of a marketplace item */
     /* Transfers ownership of the item, as well as funds between parties */
     function createMarketSale(uint256 tokenId) public payable {

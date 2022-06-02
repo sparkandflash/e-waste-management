@@ -83,24 +83,25 @@ export default function Home() {
               nfts.map((nft, i) => (
                 <div key={i}>
 
-                  <Box key={i} w="fit-content" bg='gray.300' padding={3} m={1} rounded={6}>
+                  <Box  w="fit-content" bg='gray.300' padding={3} m={1} rounded={6}>
 
-                    <Box key={i} w="280px" bg='gray.700' p={1} marginBottom='12px' rounded={6}>
+                    <Box  w="280px" bg='gray.700' p={1} marginBottom='12px' rounded={6}>
                       <Image rounded={6} boxSize='280px'
                         objectFit='cover' src={nft.image} />
                     </Box>
-                    <Spacer key={i}/>
+                    <Spacer />
                     <Box width='280px' key={i} bg='gray.100' p={4} rounded={6}>
-                      <Text key={i} color='black.500'> {nft.name}  </Text>
-                      <p key={i} color='black.500'>desc- {nft.description}  </p>
+                      <Text  color='black.500'> {nft.name}  </Text>
+                      <Text  color='black.500'> id -{nft.tokenId}  </Text>
+                      <p  color='black.500'>desc- {nft.description}  </p>
 
-                      <Text key={i} isTruncated color='black.500'>seller - {nft.seller}  </Text>
-                      <Text key={i} isTruncated color='black.500'>owner- {nft.owner}  </Text>
-                      <Text key={i} color='black.500' padding={1}>Price - {nft.price} eth </Text>
+                      <Text isTruncated color='black.500'>seller - {nft.seller}  </Text>
+                    
+                      <Text  color='black.500' padding={1}>Price - {nft.price} eth </Text>
                     </Box>
                    
-                    <Box marginTop='10px' key={i}>
-                    <Button key={i} onClick={() => buyNft(nft)}>
+                    <Box marginTop='10px' >
+                    <Button  onClick={() => buyNft(nft)}>
                       buy
                     </Button>
                   </Box>
