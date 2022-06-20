@@ -478,8 +478,8 @@
       ]
     },
     "/media/pratheeksha/My Files/js/e-waste management/main-app-1/contracts/NFTMarketplace.sol": {
-      "lastModificationDate": 1652966118505,
-      "contentHash": "c3a022a82486d33341b8a89951468196",
+      "lastModificationDate": 1654177367229,
+      "contentHash": "b9494f98bca3399194d9d0d10c271325",
       "sourceName": "contracts/NFTMarketplace.sol",
       "solcConfig": {
         "version": "0.8.4",

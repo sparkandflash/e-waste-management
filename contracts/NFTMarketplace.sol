@@ -5,9 +5,10 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
+
 import "hardhat/console.sol";
 
-contract NFTMarketplace is ERC721URIStorage {
+contract NFTMarketplace is ERC721URIStorage{
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     Counters.Counter private _itemsSold;
@@ -39,20 +40,7 @@ contract NFTMarketplace is ERC721URIStorage {
         owner = payable(msg.sender);
     }
 
-    function checkCitizen() private view returns (bool isCitizen) {
-        for (uint32 x = 0; x < uint32(citizens.length); ++x) {
-            if (msg.sender == citizens[x]) return isCitizen=true;
-        }
-    }
-
-    function addCitizen(address user) public payable {
-        citizens[citizens.length + 1] = user;
-    }
-
-    modifier onlyCitizen() {
-        require(checkCitizen());
-        _;
-    }
+   
 
     /* Updates the listing price of the contract */
     function updateListingPrice(uint256 _listingPrice) public payable {
@@ -72,7 +60,7 @@ contract NFTMarketplace is ERC721URIStorage {
     function createToken(string memory tokenURI, uint256 price)
         public
         payable
-        onlyCitizen
+      
         returns (uint256)
     {
         _tokenIds.increment();
@@ -128,20 +116,17 @@ contract NFTMarketplace is ERC721URIStorage {
         _transfer(msg.sender, address(this), tokenId);
     }
 
-    function deleteToken(uint256 tokenId) public payable {
-        _transfer(
-            msg.sender,
-            0x000000000000000000000000000000000000dEaD,
-            tokenId
+    function transferItem(uint256 tokenId, address receiver) public payable {
+        require(
+            idToMarketItem[tokenId].owner == msg.sender,
+            "Only item owner can perform this operation"
         );
+        _transfer(msg.sender, receiver, tokenId);
     }
-  function transferToken(uint256 tokenId, address receiver) public payable {
-        _transfer(
-            msg.sender,
-            receiver,
-            tokenId
-        );
-    }
+    function burn(uint256 tokenId) public payable{
+    _burn(tokenId);
+  }
+
     /* Creates the sale of a marketplace item */
     /* Transfers ownership of the item, as well as funds between parties */
     function createMarketSale(uint256 tokenId) public payable {

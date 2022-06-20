@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
-import { Text, Stack, Heading, useToast, Box, Button, Spacer, Image } from "@chakra-ui/react";
+import { Text, Stack, Heading,Grid, GridItem, useToast, Box, Button, Spacer, Image } from "@chakra-ui/react";
 import axios from 'axios'
 import Web3Modal from 'web3modal'
 import Header from '../components/Header';
@@ -41,6 +41,7 @@ export default function Home() {
       setLoadingState('loaded')
     }
     catch (err) {
+      console.log(err);
       addToast({
         title: "Alert!.",
         description: "you are on wrong network, please connect to rinkeby",
@@ -78,7 +79,7 @@ export default function Home() {
         
         <Box rounded={6} border='1px' borderColor='gray.300' padding='15px'>
         
-          <Stack direction={['column', 'row']} spacing='24px'>
+        <Grid templateColumns='repeat(5, 1fr)' gap={2}>
             {
               nfts.map((nft, i) => (
                 <div key={i}>
@@ -115,7 +116,7 @@ export default function Home() {
 
               ))
             }
-          </Stack>
+          </Grid>
         </Box>
       </Box>
     </div>
