@@ -37,7 +37,8 @@ export default function Home() {
         return item
       }))
 
-      setNfts(items)
+      setNfts(items);
+    //  newItem(items);
       setLoadingState('loaded')
     }
     catch (err) {
@@ -51,6 +52,40 @@ export default function Home() {
       })
     }
   }
+ /*  
+    async function newItem(items) {
+       
+              try {
+                const res = await fetch(
+                  '/api/add-item',
+                  {
+                    body: JSON.stringify(items),
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    method: 'POST',
+                    setTimeout: 10000
+                  }
+                ).then(res => res.json())
+                  .then(data => {
+          
+                  
+          
+                    if (data == "success") {
+                    console.log("success")
+                    }
+                    else {
+                    console.log(data);
+                    
+                    };
+                  })
+              }
+              catch (ex) {
+                console.log(ex)
+              }
+          
+            }
+*/
   async function buyNft(nft) {
     /* needs the user to sign the transaction, so will use Web3Provider and sign it */
     const web3Modal = new Web3Modal()

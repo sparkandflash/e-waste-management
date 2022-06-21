@@ -65,11 +65,10 @@ function CreateItem() {
         listingPrice = listingPrice.toString()
         let transaction = await contract.createToken(url, price, { value: listingPrice })
         await transaction.wait()
-
+console.log(transaction);
         router.push('/')
     }
-
-
+    
     return (
         <div>
 
