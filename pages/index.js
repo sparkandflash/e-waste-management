@@ -4,6 +4,7 @@ import { Text, Stack, Heading,Grid, GridItem, useToast, Box, Button, Spacer, Ima
 import axios from 'axios'
 import Web3Modal from 'web3modal'
 import Header from '../components/Header';
+import { connectWallet, getCurrentWalletConnected } from "../utils/interact.js";
 import {
   marketplaceAddress
 } from '../config'
@@ -13,11 +14,14 @@ import NFTMarketplace from '../artifacts/contracts/NFTMarketplace.sol/NFTMarketp
 export default function Home() {
   const addToast = useToast();
   const [nfts, setNfts] = useState([])
-  const [loadingState, setLoadingState] = useState('not-loaded')
-
+  const [loadingState, setLoadingState] = useState('not-loaded');
+  const [walletAddress, setWallet] = useState("");
+  const [buyTxn, setBuyTxn] = useState({event: "", price: "",from: "", to: "", data:"", hash: "", tokenid: "" })
+ 
   async function loadNFTs() {
     try {
-      const provider = new ethers.providers.JsonRpcProvider("https://rinkeby.infura.io/v3/fafcbeac5aeb44218662cb082acbdc66")
+     // const provider = new ethers.providers.JsonRpcProvider("https://rinkeby.infura.io/v3/fafcbeac5aeb44218662cb082acbdc66")
+       const provider = new ethers.providers.JsonRpcProvider("HTTP://127.0.0.1:7545")
       const contract = new ethers.Contract(marketplaceAddress, NFTMarketplace.abi, provider)
       const data = await contract.fetchMarketItems()
 
@@ -86,6 +90,38 @@ export default function Home() {
           
             }
 */
+async function buytxn() {
+       
+  try {
+    const res = await fetch(
+      '/api/add-txn-data',
+      {
+        body: JSON.stringify({buyTxn}),
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        method: 'POST',
+        setTimeout: 10000
+      }
+    ).then(res => res.json())
+      .then(data => {
+
+      
+
+        if (data == "success") {
+        console.log("success")
+        }
+        else {
+        console.log(data);
+        
+        };
+      })
+  }
+  catch (ex) {
+    console.log(ex)
+  }
+
+}
   async function buyNft(nft) {
     /* needs the user to sign the transaction, so will use Web3Provider and sign it */
     const web3Modal = new Web3Modal()
@@ -100,9 +136,13 @@ export default function Home() {
       value: price
     })
     await transaction.wait()
+    setBuyTxn({event: "SALE", price: JSON.stringify(price), from: nft.seller, to: walletAddress, date:new Date().toLocaleDateString(), hash: transaction.hash, tokenid: nft.tokenId })
+    buytxn();
     loadNFTs()
   }
-  useEffect(() => {
+  useEffect(async () => {
+    const { add, status } = await getCurrentWalletConnected();
+    setWallet(add)
     loadNFTs()
   }, [])
   if (loadingState === 'loaded' && !nfts.length) return (<div><Header /><h1>No Items listed</h1></div>)
@@ -112,9 +152,9 @@ export default function Home() {
       <Header />
       <Box padding={5}>
         
-        <Box rounded={6} border='1px' borderColor='gray.300' padding='15px'>
+        <Box rounded={6} width='max-content' border='1px' borderColor='gray.300' padding='15px'>
         
-        <Grid templateColumns='repeat(5, 1fr)' gap={2}>
+        <Grid templateColumns='repeat(3, 1fr)' gap={2}>
             {
               nfts.map((nft, i) => (
                 <div key={i}>
