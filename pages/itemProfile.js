@@ -30,8 +30,7 @@ export default function ItemProfile() {
   const [nft, setNft] = useState([])
   const { id, tokenURI } = router.query
   const { isOpen, onOpen, onClose } = useDisclosure()
-
-
+  if (!id &&tokenURI){router.push(`/`)}
   async function burnNft(nft) {
     /* needs the user to sign the transaction, so will use Web3Provider and sign it */
     const web3Modal = new Web3Modal()
@@ -45,7 +44,7 @@ export default function ItemProfile() {
     await transaction.wait()
 console.log(transaction);
   }
-
+  
   async function loadNFTs() {
 
     const EwasteItem = {

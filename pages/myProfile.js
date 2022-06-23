@@ -290,12 +290,9 @@ const [user, setUser] = useState({ role: 'false', name: '', address: '', pfp: ''
                 <Box>
                   <Text p={2}>Items owned: {nfts.length} Items bought: {nfts.length}</Text>
                 </Box>
-              </VStack>
-
-
-
-            </Center>
-            <Grid templateColumns='repeat(5, 1fr)' gap={2}>
+             
+            <Box rounded={6} width='max-content' border='1px' borderColor='gray.300' padding='15px'>
+            <Grid templateColumns='repeat(4, 1fr)' gap={2}>
             {
               nfts.map((nft, i) => (
                 <GridItem key={i}>
@@ -311,7 +308,7 @@ const [user, setUser] = useState({ role: 'false', name: '', address: '', pfp: ''
                         <p color='black.500'>desc- {nft.description}  </p>
 
 
-                        <Text isTruncated color='black.500'>owner- you  </Text>
+                        <Text isTruncated color='black.500'>owner- {nft.owner}  </Text>
                         <Text color='black.500' padding={1}>Price - {nft.price} eth </Text>
                      </Box>
 
@@ -333,6 +330,12 @@ const [user, setUser] = useState({ role: 'false', name: '', address: '', pfp: ''
               ))
             }
 </Grid>
+            </Box>
+            </VStack>
+
+
+
+</Center>
           </Container>
         </Box>
         
