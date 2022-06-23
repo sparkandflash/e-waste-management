@@ -4,7 +4,34 @@ import {
 
 
 function ServiceSearch() {
-    const serviceSearch = async event => { }
+
+    const SearchAction = async event => {
+        event.preventDefault()
+        try {
+            const res = await fetch(
+                '/api/search-button',
+                {
+                    body: JSON.stringify({
+                        name: event.target.name.value
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    method: 'POST',
+                    setTimeout: 5000
+                }
+            ).then(res => res.json()).then(data => {
+                console.log(data);
+            })
+
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+
+    
+  
     return (
 
 
@@ -12,13 +39,13 @@ function ServiceSearch() {
         <Box m="auto" h="60px" w="30%" p={1}>
 
 
-            <form onSubmit={serviceSearch}>
+            <form onSubmit={SearchAction}>
 
 
                 <FormControl>
                     <HStack>
                         <Input size="sm" rounded="9" variant="outline" placeholder="0x...." id="name" name="name" type="text" />
-                        <Button size="sm" type="submit" bg="blue.500" variant="solid" color="blue.100" >search</Button></HStack>
+                        <Button size="sm" type="submit" colorScheme="blue" variant="solid" >search</Button></HStack>
 
                 </FormControl>
 

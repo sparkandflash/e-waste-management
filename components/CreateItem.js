@@ -15,11 +15,13 @@ import {
 import NFTMarketplace from '../artifacts/contracts/NFTMarketplace.sol/NFTMarketplace.json'
 
 function CreateItem() {
+    const [uploading, setUploading] = useState(false)
     const [fileUrl, setFileUrl] = useState(null)
     const [formInput, updateFormInput] = useState({ price: '', name: '', description: '' })
     const router = useRouter()
 
     async function onChange(e) {
+        setUploading(true);
         const file = e.target.files[0]
         try {
             const added = await client.add(
@@ -30,6 +32,7 @@ function CreateItem() {
             )
             const url = `https://ipfs.infura.io/ipfs/${added.path}`
             setFileUrl(url)
+            setUploading(false);
         } catch (error) {
             console.log('Error uploading file: ', error)
         }
@@ -45,6 +48,7 @@ function CreateItem() {
             const added = await client.add(data)
             const url = `https://ipfs.infura.io/ipfs/${added.path}`
             /* after file is uploaded to IPFS, return the URL to use it in the transaction */
+            
             return url
         } catch (error) {
             console.log('Error uploading file: ', error)
@@ -64,12 +68,12 @@ function CreateItem() {
         let listingPrice = await contract.getListingPrice()
         listingPrice = listingPrice.toString()
         let transaction = await contract.createToken(url, price, { value: listingPrice })
-        await transaction.wait()
-
+     await transaction.wait();
+    
+console.log(transaction.wait);
         router.push('/')
     }
-
-
+    
     return (
         <div>
 
@@ -125,7 +129,7 @@ function CreateItem() {
 
 
 
-                                <Button onClick={listNFTForSale} size="md">submit</Button>
+                                <Button   disabled={ uploading} onClick={listNFTForSale} size="md">submit</Button>
                             </form>
                         </VStack>
                     </Center>

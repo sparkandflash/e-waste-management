@@ -14,10 +14,11 @@ module.exports = {
       url: `https://polygon-mumbai.g.alchemy.com/v2/i3d8BCEojCnlceh0jLjlyIEC2r8OdTjK`,
     // url: "https://rpc-mumbai.matic.today",
       accounts: [`${MUMBAI_PRIVATE_KEY}`]
-    },*/
+    },
+    */
     rinkeby: {
-      url: "https://speedy-nodes-nyc.moralis.io/255baec1b14ec7a2a5f7f063/eth/rinkeby", //Infura url with projectId
-      accounts: [``] // add the account that will deploy the contract (private key)
+      url: "https://rinkeby.infura.io/v3/fafcbeac5aeb44218662cb082acbdc66", //Infura url with projectId
+      accounts: [`6da9edab8ab983e89a98a42f4932798683d7c3b78b03d0abf443ff31cc72daa3`] // add the account that will deploy the contract (private key)
      },
     /*
     matic: {
@@ -27,6 +28,12 @@ module.exports = {
       accounts: [process.env.privateKey]
     }
     */
+    ganache: {
+      // Infura
+      // url: `https://polygon-mainnet.infura.io/v3/${infuraId}`,
+      url: "HTTP://127.0.0.1:7545",
+      accounts: ['00ef409360b0038b56b7bbdfa60ac8a537b48dabeea7e3a0c53414e8c204acd2']
+    }
   },
   solidity: {
     version: "0.8.4",

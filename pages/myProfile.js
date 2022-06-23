@@ -1,11 +1,17 @@
-import { Box, Image, useToast, Button, Spacer, Container, Heading, VStack, Center, Tag, Text } from '@chakra-ui/react'
+import {
+  Box, Image, Modal,
+  useToast, Button,  Grid, GridItem, Container, Heading, VStack, Center, Tag, Text
+} from '@chakra-ui/react'
 import Header from '../components/Header';
+
 import { ethers } from 'ethers';
 import axios from 'axios'
 import Web3Modal from 'web3modal';
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { connectWallet, getCurrentWalletConnected } from "../utils/interact.js";
 import { useRouter } from 'next/router'
+
+import { supabase } from '../utils/supabaseClient'
 //display profile details.
 
 import {
@@ -16,6 +22,7 @@ import NFTMarketplace from '../artifacts/contracts/NFTMarketplace.sol/NFTMarketp
 
 
 export default function MyProfile() {
+const [user, setUser] = useState({ role: 'false', name: '', address: '', pfp: '' })
   const addToast = useToast();
   const router = useRouter();
   const [nfts, setNfts] = useState([])
@@ -23,8 +30,10 @@ export default function MyProfile() {
   const [connected, setConnected] = useState("");
   const [walletAddress, setWallet] = useState("");
   const [status, setStatus] = useState("");
-  const [constatus, setConstatus] = useState(false);
   const [mintrole, setMintRole] = useState(true);
+
+
+
 
   async function loadNFTs() {
     const web3Modal = new Web3Modal({
@@ -57,16 +66,16 @@ export default function MyProfile() {
     setNfts(items)
     setLoadingState('loaded')
   }
-  function listNFT(nft) {
-    console.log('nft:', nft)
-    router.push(`/resell-nft?id=${nft.tokenId}&tokenURI=${nft.tokenURI}`)
-  }
+
+
   const connectWalletPressed = async () => {
     try {
       const walletResponse = await connectWallet();
       setStatus(walletResponse.status);
       setWallet(walletResponse.address);
       setConnected(true);
+     
+  
     }
     catch (err) {
       setConstatus(false);
@@ -79,25 +88,8 @@ export default function MyProfile() {
       })
     }
   };
-  useEffect(async () => {
-    const { address, status } = await getCurrentWalletConnected();
-    setWallet(address)
-    setStatus(status);
-    window.sessionStorage.setItem('address', walletAddress);
-    window.localStorage.setItem('status', constatus);
-    window.localStorage.setItem('role', mintrole);
-    console.log(walletAddress);
+ 
 
-  }, []);
-
-  useEffect(async () => {
-    const { address, status } = await getCurrentWalletConnected();
-    setWallet(address)
-    setStatus(status);
-
-    addWalletListener();
-    loadNFTs();
-  }, []);
   function addWalletListener() {
     if (window.ethereum) {
       window.ethereum.on("accountsChanged", (accounts) => {
@@ -122,7 +114,7 @@ export default function MyProfile() {
     }
   }
   function viewItem(nft) {
-
+    console.log('nft:', nft)
     router.push(`/itemProfile?id=${nft.tokenId}&tokenURI=${nft.tokenURI}`)
   }
   //if user is unregistered, that is, do an if else to check whther wallet address is stored in db or not
@@ -133,29 +125,142 @@ export default function MyProfile() {
 
 
   // load data from chain/db for below variables
-  let Registred = true;
-  const user = {
-    address: "some city/village",
-    name: "some-nice-citizen",
-    role: "Citizen",
-    noOfowned: 2,
-    itemsCreated: 3,
-    itemsSold: 2,
-    itemsBought: 5,
+  async function isRegistered(walletadd) {
+    try {
+  
+  
+  
+      let { data, error, status } = await supabase
+        .from('users')
+        .select(`name, address, citizen,pfp, walletAddress`)
+        .eq('walletAddress', walletadd)
+        .single()
+  
+      if (error && status !== 406) {
+        throw error
+      }
+  
+      if (!data) {
+        router.push(`/register`)
+      
+      }
+      else {
+        console.log(data);
+        setUser({role: data.citizen, name: data.name, address:data.address, pfp:data.pfp  })
+
+        loadNFTs();
+      }
+        
+      }
+     catch (error) {
+     
+   
+  }
   }
 
 
+  useEffect(async () => {
+    const { address, status } = await getCurrentWalletConnected();
+    setWallet(address)
+    setStatus(status);
+    window.sessionStorage.setItem('address', walletAddress);
+    window.localStorage.setItem('constatus', "true");
+
+    console.log(walletAddress);
+    address = JSON.stringify(address);
+    isRegistered(address);
+    
+    addWalletListener();
+  
+
+  }, []);
 
 
-  if (Registred != true) {
-    router.push('/register')
-  }
-  if (loadingState === 'loaded' && !nfts.length) return (<h1>No NFTs owned</h1>)
+  if (loadingState === 'loaded' && !nfts.length) return (<div>  <Header />
+  
+
+    <Box padding={4}>
+      <Box w='100%' borderRadius='lg' padding={5} borderWidth='1px'>
+        <Center>
+          <VStack padding={3}>
+            <Image
+              borderRadius='full'
+              boxSize='150px'
+              src={user.pfp}alt='Dan Abramov' />
+            <Text fontSize='md'>{user.name}</Text>
+            {
+              user.role ?  <Tag >citizen</Tag> : <Tag>user</Tag>
+            }
+           
+
+
+          </VStack>
+
+        </Center>
+
+        <Text borderRadius='lg' borderWidth='1px' padding=" 10px" fontSize='md'>wallet address: {walletAddress}<br />physical address : {user.address}</Text>
+      </Box>
+      <Container p={3}>
+        <Center>
+          <VStack>
+            <Heading as='h5' size='sm'>
+              items
+            </Heading>
+            <Button size='sm' disabled= {!user.role} colorScheme="blue" onClick={() => router.push('/citizen')}>add item</Button>
+            <Box>
+              <Text p={2}>Items owned: {nfts.length} Items bought: {nfts.length}</Text>
+            </Box>
+            <Text>No Items available</Text>
+          </VStack>
+
+
+
+        </Center>
+       
+        
+
+      </Container>
+    </Box>
+    
+
+
+
+  
+</div>)
 
   return (
     <div>
       <Header />
-      {connected ?
+      {!connected ?
+      <Container p={5} h="500px" maxW="container.lg" centerContent='true'>
+
+      <Box m="auto" shadow="lg" p={4} opacity="90%" blur="3px" bg="blue.300" rounded="10px" h="350px">
+
+        <Box h="90px" p={3}>
+
+          <Text color="black.500" fontSize="2xl" fontWeight="bold" align="center">
+            E-waste management system using blockchain
+          </Text>
+          <Center h="40">
+            <VStack>
+
+
+              <Button size="lg" onClick={() => connectWalletPressed()}>Connect</Button>
+            </VStack>
+
+          </Center>
+
+          <Text color="black.300" fontSize="md" align="center">
+            use your browser wallet extension to connect to the D-app
+          </Text>
+        </Box>
+
+
+      </Box>
+
+
+    </Container>
+:
 
         <Box padding={4}>
           <Box w='100%' borderRadius='lg' padding={5} borderWidth='1px'>
@@ -164,9 +269,11 @@ export default function MyProfile() {
                 <Image
                   borderRadius='full'
                   boxSize='150px'
-                  src='https://imgs.search.brave.com/opYbvWl31hdvDMn85MJetB9SEe0ylm-8htxINxnAyks/rs:fit:400:225:1/g:ce/aHR0cHM6Ly90c2Uz/Lm1tLmJpbmcubmV0/L3RoP2lkPU9JUC5m/dndwWl9YTkh5bUhq/bkVuTjlqTkdRQUFB/QSZwaWQ9QXBp' alt='Dan Abramov' />
+
+                  src={user.pfp}alt='Dan Abramov' />
+
                 <Text fontSize='md'>{user.name}</Text>
-                <Tag>{user.role}</Tag>
+                <Tag visibility={user.role}>citizen</Tag>
 
 
               </VStack>
@@ -181,89 +288,60 @@ export default function MyProfile() {
                 <Heading as='h5' size='sm'>
                   items
                 </Heading>
+                <Button size='sm' disabled= {!user.role} colorScheme="blue" onClick={() => router.push('/citizen')}>add item</Button>
                 <Box>
-                  <Text p={2}>Items owned: {nfts.length} Items created: {user.itemsCreated} Items sold: {user.itemsSold} Items bought: {nfts.length}</Text>
+                  <Text p={2}>Items owned: {nfts.length} Items bought: {nfts.length}</Text>
                 </Box>
-              </VStack>
-
-
-
-            </Center>
+             
+            <Box rounded={6} width='max-content' border='1px' borderColor='gray.300' padding='15px'>
+            <Grid templateColumns='repeat(4, 1fr)' gap={2}>
             {
               nfts.map((nft, i) => (
-                <div key={i}>
-<Box bg='gray.200' w='fit-content' rounded={3} p={2}>
-                  <Box key={i} w="250px" bg='gray.300' padding={3} m={2} rounded={6}>
-
-                    <Box key={i} bg='gray.700' p={3} m={3} rounded={3}>
-                      <Image key={i} rounded={5} boxSize='250px'
-                        objectFit='cover' src={nft.image} />
-                    </Box>
-                    <Spacer key={i} />
-                    <Box key={i} bg='gray.100' p={3} rounded={6}>
-                      <Text key={i} color='black.500'> {nft.name}  </Text>
-                      <p key={i} color='black.500'>desc- {nft.description}  </p>
-
+                <GridItem key={i}>
                   
-                      <Text key={i} isTruncated color='black.500'>owner- you  </Text>
-                      <Text key={i} color='black.500' padding={1}>Price - {nft.price} eth </Text>
+                    <Box w="250px" bg='gray.300' padding={3} rounded={6}>
+
+                        <Image rounded={5} boxSize='250px'
+                          objectFit='cover' src={nft.image} />
+                     
+                     
+                     <Box bg='gray.400'  rounded={6} marginBlockStart={3} marginBlockEnd={3} p={3}>
+                     <Text color='black.500'> {nft.name}  </Text>
+                        <p color='black.500'>desc- {nft.description}  </p>
+
+
+                        <Text isTruncated color='black.500'>owner- {nft.owner}  </Text>
+                        <Text color='black.500' padding={1}>Price - {nft.price} eth </Text>
+                     </Box>
+
+                   
+
+                        <Button onClick={() => viewItem(nft)}>
+                        view
+                      </Button>
+
                     </Box>
+                    
 
 
-
-                  </Box>
-                  <Box key={i}>
-                    <Button key={i} m={3} onClick={() => listNFT(nft)}>
-                      resell
-                    </Button>
-                  
-                    <Button key={i} onClick={() => viewItem(nft)}>
-                      view
-                    </Button>
-                  </Box>
-                  </Box>
-
-                </div>
+                    
+                    
+                 
+                </GridItem>
 
               ))
             }
+</Grid>
+            </Box>
+            </VStack>
 
-            {
-              // display all items owned by the user
-            }
+
+
+</Center>
           </Container>
         </Box>
-        :
-        <Container p={5} h="500px" maxW="container.lg" centerContent='true'>
-
-          <Box m="auto" shadow="lg" p={4} opacity="90%" blur="3px" bg="blue.300" rounded="10px" h="350px">
-
-            <Box h="90px" p={3}>
-
-              <Text color="black.500" fontSize="2xl" fontWeight="bold" align="center">
-                E-waste management system using blockchain
-              </Text>
-              <Center h="40">
-                <VStack>
-
-
-                  <Button size="lg" onClick={() => connectWalletPressed()}>Connect</Button>
-                </VStack>
-
-              </Center>
-
-              <Text color="black.300" fontSize="md" align="center">
-                use your browser wallet extension to connect to the D-app
-              </Text>
-            </Box>
-
-
-
-          </Box>
-
-
-        </Container>
-
+        
+        
 
 
       }

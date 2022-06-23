@@ -1,9 +1,10 @@
 import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
-import { Text, Stack, Heading, useToast, Box, Button, Spacer, Image } from "@chakra-ui/react";
+import { Text, Stack, Heading,Grid, GridItem, Center,useToast, Box, Button, Spacer, Image } from "@chakra-ui/react";
 import axios from 'axios'
 import Web3Modal from 'web3modal'
 import Header from '../components/Header';
+import { connectWallet, getCurrentWalletConnected } from "../utils/interact.js";
 import {
   marketplaceAddress
 } from '../config'
@@ -13,11 +14,16 @@ import NFTMarketplace from '../artifacts/contracts/NFTMarketplace.sol/NFTMarketp
 export default function Home() {
   const addToast = useToast();
   const [nfts, setNfts] = useState([])
-  const [loadingState, setLoadingState] = useState('not-loaded')
-
+  const [loadingState, setLoadingState] = useState('not-loaded');
+  const [walletAddress, setWallet] = useState("");
+  const [buyTxn, setBuyTxn] = useState({event: "", price: "",from: "", to: "", data:"", hash: "", tokenid: "" })
+ 
   async function loadNFTs() {
     try {
       const provider = new ethers.providers.JsonRpcProvider("https://rinkeby.infura.io/v3/fafcbeac5aeb44218662cb082acbdc66")
+
+    //   const provider = new ethers.providers.JsonRpcProvider("HTTP://127.0.0.1:7545")
+
       const contract = new ethers.Contract(marketplaceAddress, NFTMarketplace.abi, provider)
       const data = await contract.fetchMarketItems()
 
@@ -37,10 +43,12 @@ export default function Home() {
         return item
       }))
 
-      setNfts(items)
+      setNfts(items);
+    //  newItem(items);
       setLoadingState('loaded')
     }
     catch (err) {
+      console.log(err);
       addToast({
         title: "Alert!.",
         description: "you are on wrong network, please connect to rinkeby",
@@ -50,6 +58,72 @@ export default function Home() {
       })
     }
   }
+ /*  
+    async function newItem(items) {
+       
+              try {
+                const res = await fetch(
+                  '/api/add-item',
+                  {
+                    body: JSON.stringify(items),
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    method: 'POST',
+                    setTimeout: 10000
+                  }
+                ).then(res => res.json())
+                  .then(data => {
+          
+                  
+          
+                    if (data == "success") {
+                    console.log("success")
+                    }
+                    else {
+                    console.log(data);
+                    
+                    };
+                  })
+              }
+              catch (ex) {
+                console.log(ex)
+              }
+          
+            }
+*/
+async function buytxn() {
+       
+  try {
+    const res = await fetch(
+      '/api/add-txn-data',
+      {
+        body: JSON.stringify({buyTxn}),
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        method: 'POST',
+        setTimeout: 10000
+      }
+    ).then(res => res.json())
+      .then(data => {
+
+      
+
+        if (data == "success") {
+        console.log("success")
+        }
+        else {
+        console.log(data);
+        
+        };
+      })
+  }
+  catch (ex) {
+    console.log(ex)
+  }
+
+}
   async function buyNft(nft) {
     /* needs the user to sign the transaction, so will use Web3Provider and sign it */
     const web3Modal = new Web3Modal()
@@ -64,9 +138,13 @@ export default function Home() {
       value: price
     })
     await transaction.wait()
+    setBuyTxn({event: "SALE", price: JSON.stringify(price), from: nft.seller, to: walletAddress, date:new Date().toLocaleDateString(), hash: transaction.hash, tokenid: nft.tokenId })
+    buytxn();
     loadNFTs()
   }
-  useEffect(() => {
+  useEffect(async () => {
+    const { add, status } = await getCurrentWalletConnected();
+    setWallet(add)
     loadNFTs()
   }, [])
   if (loadingState === 'loaded' && !nfts.length) return (<div><Header /><h1>No Items listed</h1></div>)
@@ -75,45 +153,51 @@ export default function Home() {
     <div>
       <Header />
       <Box padding={5}>
-        <Heading padding='12px' size='md' >Items listed by citizens:</Heading>
-        <Box rounded={6} border='1px' borderColor='gray.300' padding='12px'>
-          <Stack direction={['column', 'row']} spacing='24px'>
+        <Center>
+        <Box rounded={6} width='max-content' border='1px' borderColor='gray.300' padding='15px'>
+        
+        <Grid templateColumns='repeat(3, 1fr)' gap={2}>
             {
               nfts.map((nft, i) => (
                 <div key={i}>
 
-                  <Box key={i} w="250px" bg='gray.300' padding={3} m={2} rounded={6}>
+                  <Box  w="fit-content" bg='gray.300' padding={3} m={1} rounded={6}>
 
-                    <Box key={i} bg='gray.700' p={3} m={3} rounded={3}>
-                      <Image rounded={5} boxSize='250px'
+                    <Box  w="280px" bg='gray.700' p={1} marginBottom='12px' rounded={6}>
+                      <Image rounded={6} boxSize='280px'
                         objectFit='cover' src={nft.image} />
                     </Box>
-                    <Spacer key={i}/>
-                    <Box key={i} bg='gray.100' p={3} rounded={6}>
-                      <Text key={i} color='black.500'> {nft.name}  </Text>
-                      <p key={i} color='black.500'>desc- {nft.description}  </p>
 
-                      <Text key={i} isTruncated color='black.500'>seller - {nft.seller}  </Text>
-                 
-                      <Text key={i} color='black.500' padding={1}>Price - {nft.price} eth </Text>
+                    <Spacer />
+                    <Box width='280px' key={i} bg='gray.100' p={4} rounded={6}>
+                      <Text  color='black.500'> {nft.name}  </Text>
+                      <Text  color='black.500'> id -{nft.tokenId}  </Text>
+                      <p  color='black.500'>desc- {nft.description}  </p>
+
+                      <Text isTruncated color='black.500'>seller - {nft.seller}  </Text>
+                    
+                      <Text  color='black.500' padding={1}>Price - {nft.price} eth </Text>
+
                     </Box>
-
-
-
-                  </Box>
-                  <Box key={i}>
-                    <Button key={i} onClick={() => buyNft(nft)}>
+                   
+                    <Box marginTop='10px' >
+                    <Button  onClick={() => buyNft(nft)}>
                       buy
                     </Button>
                   </Box>
+
+
+                  </Box>
+                  
 
 
                 </div>
 
               ))
             }
-          </Stack>
+          </Grid>
         </Box>
+        </Center>
       </Box>
     </div>
   )
