@@ -17,6 +17,7 @@ import axios from 'axios'
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/router'
 import ResellNFT from '../components/ResellNft';
+import TransferNFT from '../components/TransferNFT';
 import TxnData from '../components/TxnData';
 import Web3Modal from 'web3modal'
 import {
@@ -28,6 +29,8 @@ import NFTMarketplace from '../artifacts/contracts/NFTMarketplace.sol/NFTMarketp
 export default function ItemProfile() {
   const router = useRouter();
   const [nft, setNft] = useState([])
+  const [resellItem, setResellItem] = useState([true])
+  const [recevier, setRecevier] = useState([])
   const { id, tokenURI } = router.query
   const { isOpen, onOpen, onClose } = useDisclosure()
   if (!id &&tokenURI){router.push(`/`)}
@@ -41,6 +44,19 @@ export default function ItemProfile() {
 
     /* user will be prompted to pay the asking proces to complete the transaction */
     const transaction = await contract.transferItem(nft.tokenId, "0x000000000000000000000000000000000000dEaD")
+    await transaction.wait()
+console.log(transaction);
+  }
+  async function transferNft(nft) {
+    /* needs the user to sign the transaction, so will use Web3Provider and sign it */
+    const web3Modal = new Web3Modal()
+    const connection = await web3Modal.connect()
+    const provider = new ethers.providers.Web3Provider(connection)
+    const signer = provider.getSigner()
+    const contract = new ethers.Contract(marketplaceAddress, NFTMarketplace.abi, signer)
+
+    /* user will be prompted to pay the asking proces to complete the transaction */
+    const transaction = await contract.transferItem(nft.tokenId, recevier)
     await transaction.wait()
 console.log(transaction);
   }
@@ -91,6 +107,10 @@ console.log(transaction);
     setNft(EwasteItem);
 
   }
+  function modalControl() {
+    setResellItem(false);
+    onOpen();
+  }
   useEffect(() => {
 
     loadNFTs()
@@ -129,7 +149,7 @@ console.log(transaction);
         <Button m={3} onClick={onOpen}>
           resell
         </Button>
-        <Button m={3} >
+        <Button m={3} onClick={() => modalControl()}>
           transfer
         </Button>
         <Button m={3} onClick={() => burnNft(nft)}>
@@ -141,8 +161,10 @@ console.log(transaction);
           <ModalContent>
             <ModalHeader >Resell {nft.name} ? </ModalHeader>
             <ModalCloseButton />
-            <ModalBody >
-              <ResellNFT   {...nft} />
+            <ModalBody > 
+{resellItem ?  <ResellNFT   {...nft} /> : <TransferNFT {...nft}/> }
+             
+
             </ModalBody>
           </ModalContent>
         </Modal>
