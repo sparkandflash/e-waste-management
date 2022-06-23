@@ -121,7 +121,8 @@ contract NFTMarketplace is ERC721URIStorage{
             idToMarketItem[tokenId].owner == msg.sender,
             "Only item owner can perform this operation"
         );
-        _transfer(receiver,msg.sender,  tokenId);
+         idToMarketItem[tokenId].owner = payable(receiver);
+        _transfer(msg.sender, receiver, tokenId);
     }
    
 

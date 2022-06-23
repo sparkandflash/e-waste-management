@@ -15,11 +15,43 @@ import NFTMarketplace from '../artifacts/contracts/NFTMarketplace.sol/NFTMarketp
 export default function ResellNFT(nft) {
   const [formInput, updateFormInput] = useState({ price: '', image: '' })
   const router = useRouter()
-
+  const [resellTxn, setResellTxn] = useState({event: "", price: "",from: "", to: "", data:"", hash: "", tokenid: "" })
+ 
   const { image, price } = formInput
 
 
-
+  async function reselltxn() {
+       
+    try {
+      const res = await fetch(
+        '/api/add-txn-data',
+        {
+          body: JSON.stringify({resellTxn}),
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          method: 'POST',
+          setTimeout: 10000
+        }
+      ).then(res => res.json())
+        .then(data => {
+  
+        
+  
+          if (data == "success") {
+          console.log("success")
+          }
+          else {
+          console.log(data);
+          
+          };
+        })
+    }
+    catch (ex) {
+      console.log(ex)
+    }
+  
+  }
   
  
   async function listNFTForSale() {
@@ -41,8 +73,12 @@ export default function ResellNFT(nft) {
 
     console.log(listingPrice);
     try{
-    let transaction = await contract.resellToken(nft.tokenId, priceFormatted, { value: listingPrice })
-    await transaction.wait()
+    const transaction = await contract.resellToken(nft.tokenId, priceFormatted, { value: listingPrice })
+    await transaction.wait(
+      () => setResellTxn({event: "RELIST", price: JSON.stringify(formInput.price), from: nft.owner, to: "MARKETPLACE", date:new Date().toLocaleDateString(), hash: transaction.hash, tokenid: nft.tokenId }),
+      reselltxn()
+    )
+    
     }
     catch(err){
       console.log(err)

@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
-import { Text, Stack, Heading,Grid, GridItem, useToast, Box, Button, Spacer, Image } from "@chakra-ui/react";
+import { Text, Stack, Heading,Grid, GridItem, Center,useToast, Box, Button, Spacer, Image } from "@chakra-ui/react";
 import axios from 'axios'
 import Web3Modal from 'web3modal'
 import Header from '../components/Header';
@@ -151,7 +151,7 @@ async function buytxn() {
     <div>
       <Header />
       <Box padding={5}>
-        
+        <Center>
         <Box rounded={6} width='max-content' border='1px' borderColor='gray.300' padding='15px'>
         
         <Grid templateColumns='repeat(3, 1fr)' gap={2}>
@@ -193,6 +193,7 @@ async function buytxn() {
             }
           </Grid>
         </Box>
+        </Center>
       </Box>
     </div>
   )
