@@ -269,7 +269,9 @@ const [user, setUser] = useState({ role: 'false', name: '', address: '', pfp: ''
                 <Image
                   borderRadius='full'
                   boxSize='150px'
+
                   src={user.pfp}alt='Dan Abramov' />
+
                 <Text fontSize='md'>{user.name}</Text>
                 <Tag visibility={user.role}>citizen</Tag>
 

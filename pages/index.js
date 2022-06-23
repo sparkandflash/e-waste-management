@@ -21,7 +21,9 @@ export default function Home() {
   async function loadNFTs() {
     try {
       const provider = new ethers.providers.JsonRpcProvider("https://rinkeby.infura.io/v3/fafcbeac5aeb44218662cb082acbdc66")
+
     //   const provider = new ethers.providers.JsonRpcProvider("HTTP://127.0.0.1:7545")
+
       const contract = new ethers.Contract(marketplaceAddress, NFTMarketplace.abi, provider)
       const data = await contract.fetchMarketItems()
 
@@ -165,6 +167,7 @@ async function buytxn() {
                       <Image rounded={6} boxSize='280px'
                         objectFit='cover' src={nft.image} />
                     </Box>
+
                     <Spacer />
                     <Box width='280px' key={i} bg='gray.100' p={4} rounded={6}>
                       <Text  color='black.500'> {nft.name}  </Text>
@@ -174,6 +177,7 @@ async function buytxn() {
                       <Text isTruncated color='black.500'>seller - {nft.seller}  </Text>
                     
                       <Text  color='black.500' padding={1}>Price - {nft.price} eth </Text>
+
                     </Box>
                    
                     <Box marginTop='10px' >
