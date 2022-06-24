@@ -73,16 +73,19 @@ export default function TransferNFT(nft) {
     console.log(listingPrice);
     try{
     const transaction = await contract.transferItem(nft.tokenId, Address)
-    await transaction.wait(
-      () => setResellTxn({event: "TRANSFER", price: JSON.stringify(formInput.price), from: nft.owner, to: Address, date:new Date().toLocaleDateString(), hash: transaction.hash, tokenid: nft.tokenId }),
+    await transaction.wait().then(
+      setResellTxn({event: "TRANSFER", price: JSON.stringify(formInput.price), from: nft.owner, to: Address, date:new Date().toLocaleDateString(), hash: transaction.hash, tokenid: nft.tokenId }),
       transfertxn()
     )
+
+    
+    router.push('/myProfile')
     
     }
     catch(err){
       console.log(err)
     }
-    router.push('/')
+    router.push('/myProfile')
   }
  
 

@@ -2,7 +2,7 @@
 import Header from '../components/Header';
 import { Container, Checkbox, HStack, Textarea,CheckboxGroup, Input, Button, VStack, Text, Box, Center } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { supabase } from '../utils/supabaseClient'
+
 import { connectWallet, getCurrentWalletConnected } from "../utils/interact.js";
 import { create as ipfsHttpClient } from 'ipfs-http-client'
 import { useRouter } from 'next/router';
@@ -92,7 +92,7 @@ export default function Register() {
         catch (ex) {
           console.log(ex)
         }
-    
+        router.push('/myProfile')
       }
       useEffect(async () => {
         const { address, status } = await getCurrentWalletConnected();
@@ -152,7 +152,7 @@ export default function Register() {
 
 
                                 <Button       onClick={() => newRegister(formInput)}
-      disabled={ uploading}
+      loading={ uploading}
 size="md">submit</Button>
                             </form>
                         </VStack>

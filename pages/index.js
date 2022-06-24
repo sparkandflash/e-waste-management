@@ -13,7 +13,8 @@ import NFTMarketplace from '../artifacts/contracts/NFTMarketplace.sol/NFTMarketp
 
 export default function Home() {
   const addToast = useToast();
-  const [nfts, setNfts] = useState([])
+  const [nfts, setNfts] = useState([]);
+  const[waiting, setWaiting] =useState(false);
   const [loadingState, setLoadingState] = useState('not-loaded');
   const [walletAddress, setWallet] = useState("");
   const [buyTxn, setBuyTxn] = useState({event: "", price: "",from: "", to: "", data:"", hash: "", tokenid: "" })
@@ -126,6 +127,8 @@ async function buytxn() {
 }
   async function buyNft(nft) {
     /* needs the user to sign the transaction, so will use Web3Provider and sign it */
+    try{
+    setWaiting(true);
     const web3Modal = new Web3Modal()
     const connection = await web3Modal.connect()
     const provider = new ethers.providers.Web3Provider(connection)
@@ -137,14 +140,28 @@ async function buytxn() {
     const transaction = await contract.createMarketSale(nft.tokenId, {
       value: price
     })
-    await transaction.wait()
-    setBuyTxn({event: "SALE", price: JSON.stringify(price), from: nft.seller, to: walletAddress, date:new Date().toLocaleDateString(), hash: transaction.hash, tokenid: nft.tokenId })
-    buytxn();
-    loadNFTs()
+    await transaction.wait().then(
+    console.log(transaction.logs),
+    setBuyTxn({event: "SALE", price: JSON.stringify(price), from: nft.seller, to: walletAddress, date:new Date().toLocaleDateString(), hash: transaction.hash, tokenid: nft.tokenId }),
+    console.log(buyTxn),
+    buytxn(),
+    loadNFTs(),
+    
+    setWaiting(false))
+    }
+    catch (err) {
+      console.log(err);
+      setWaiting(false);
+    }
   }
   useEffect(async () => {
-    const { add, status } = await getCurrentWalletConnected();
-    setWallet(add)
+   
+    const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+// Prompt user for account connections
+await provider.send("eth_requestAccounts", []);
+const signer = provider.getSigner();
+    setWallet(await signer.getAddress());
+    
     loadNFTs()
   }, [])
   if (loadingState === 'loaded' && !nfts.length) return (<div><Header /><h1>No Items listed</h1></div>)
@@ -181,7 +198,7 @@ async function buytxn() {
                     </Box>
                    
                     <Box marginTop='10px' >
-                    <Button  onClick={() => buyNft(nft)}>
+                    <Button disabled={waiting} onClick={() => buyNft(nft)}>
                       buy
                     </Button>
                   </Box>

@@ -8,12 +8,12 @@ module.exports = {
     hardhat: {
       chainId: 1337
     },
-    
-   /* mumbai: {
+    /*
+    mumbai: {
       // Infura
       url: `https://polygon-mumbai.g.alchemy.com/v2/i3d8BCEojCnlceh0jLjlyIEC2r8OdTjK`,
     // url: "https://rpc-mumbai.matic.today",
-      accounts: [`${MUMBAI_PRIVATE_KEY}`]
+      accounts: [`6da9edab8ab983e89a98a42f4932798683d7c3b78b03d0abf443ff31cc72daa3`]
     },
     */
     rinkeby: {

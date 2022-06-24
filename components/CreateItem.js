@@ -48,7 +48,7 @@ function CreateItem() {
             const added = await client.add(data)
             const url = `https://ipfs.infura.io/ipfs/${added.path}`
             /* after file is uploaded to IPFS, return the URL to use it in the transaction */
-            
+
             return url
         } catch (error) {
             console.log('Error uploading file: ', error)
@@ -64,16 +64,28 @@ function CreateItem() {
 
         /* next, create the item */
         const price = ethers.utils.parseUnits(formInput.price, 'ether')
-        let contract = new ethers.Contract(marketplaceAddress, NFTMarketplace.abi, signer)
-        let listingPrice = await contract.getListingPrice()
-        listingPrice = listingPrice.toString()
-        let transaction = await contract.createToken(url, price, { value: listingPrice })
-     await transaction.wait();
-    
-console.log(transaction.wait);
+
+
+        try {
+            let contract = new ethers.Contract(marketplaceAddress, NFTMarketplace.abi, signer)
+            let listingPrice = await contract.getListingPrice()
+            listingPrice = listingPrice.toString()
+            let transaction = await contract.createToken(url, price, { value: listingPrice })
+
+
+            const receipt = await transaction.wait()
+            console.log(receipt)
+          //get hash first then obtain receipt from it, then get token id
+          console.log(transaction.hash);
+          console.log(transaction.logs);
+        }
+        catch (err) {
+            console.log(err)
+        }
+
         router.push('/')
     }
-    
+
     return (
         <div>
 
@@ -81,65 +93,65 @@ console.log(transaction.wait);
 
             <Box m="auto" shadow="lg" p={4} opacity="90%" blur="3px" bg="blue.500" rounded="10px" h="max-content">
 
-               
 
-                    <Text color="blue.100" fontSize="2xl" fontWeight="bold" align="center">
-                        Hello citizen!
-                    </Text>
-                    <Center height='max-content'>
-                        <VStack>
 
-                            <form>
-                                <Text color="blue.50" fontWeight="bold" mb='8px'>Item name:</Text>
+                <Text color="blue.100" fontSize="2xl" fontWeight="bold" align="center">
+                    Hello citizen!
+                </Text>
+                <Center height='max-content'>
+                    <VStack>
+
+                        <form>
+                            <Text color="blue.50" fontWeight="bold" mb='8px'>Item name:</Text>
+                            <Input
+                                placeholder="Asset Name"
+
+                                onChange={e => updateFormInput({ ...formInput, name: e.target.value })}
+                            />
+                            <Text color="blue.50" fontWeight="bold" mb='8px'>description:</Text>
+                            <Textarea
+
+                                placeholder="Asset Description"
+
+                                onChange={e => updateFormInput({ ...formInput, description: e.target.value })}
+                            />
+                            <Text color="blue.50" fontWeight="bold" mb='8px'>price:</Text>
+                            <Input
+                                placeholder="Asset Price in Eth"
+
+                                onChange={e => updateFormInput({ ...formInput, price: e.target.value })}
+                            />
+                            <Box p={2} width='fit-content'>
+                                <Text color="blue.50" fontWeight="bold" mb='8px'>upload file</Text>
                                 <Input
-                                    placeholder="Asset Name"
+                                    type="file"
+                                    name="Asset"
 
-                                    onChange={e => updateFormInput({ ...formInput, name: e.target.value })}
+                                    onChange={onChange}
                                 />
-                                <Text color="blue.50" fontWeight="bold" mb='8px'>description:</Text>
-                                <Textarea
-
-                                    placeholder="Asset Description"
-
-                                    onChange={e => updateFormInput({ ...formInput, description: e.target.value })}
-                                />
-                                <Text color="blue.50" fontWeight="bold" mb='8px'>price:</Text>
-                                <Input
-                                    placeholder="Asset Price in Eth"
-
-                                    onChange={e => updateFormInput({ ...formInput, price: e.target.value })}
-                                />
-                                <Box p={2} width='fit-content'>
-                                    <Text color="blue.50" fontWeight="bold" mb='8px'>upload file</Text>
-                                    <Input
-                                        type="file"
-                                        name="Asset"
-
-                                        onChange={onChange}
-                                    />
-                                    <Text color="blue.50" fontWeight="bold" mb='8px'>item Picture:</Text>
-                                    {
-                                        fileUrl && (
-                                            <Image borderRadius={6} boxSize='350px'
-                                                objectFit='cover'
-                                                src={fileUrl} />
-                                        )
-                                    }
-                                </Box>
+                                <Text color="blue.50" fontWeight="bold" mb='8px'>item Picture:</Text>
+                                {
+                                    fileUrl && (
+                                        <Image borderRadius={6} boxSize='350px'
+                                            objectFit='cover'
+                                            src={fileUrl} />
+                                    )
+                                }
+                            </Box>
 
 
 
-                                <Button   disabled={ uploading} onClick={listNFTForSale} size="md">submit</Button>
-                            </form>
-                        </VStack>
-                    </Center>
+                            <Button disabled={uploading} onClick={listNFTForSale} size="md">submit</Button>
+                        </form>
+                    </VStack>
+                </Center>
 
 
-                </Box>
+            </Box>
 
 
 
-         
+
 
 
         </div>

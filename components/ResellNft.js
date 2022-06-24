@@ -74,16 +74,17 @@ export default function ResellNFT(nft) {
     console.log(listingPrice);
     try{
     const transaction = await contract.resellToken(nft.tokenId, priceFormatted, { value: listingPrice })
-    await transaction.wait(
-      () => setResellTxn({event: "RELIST", price: JSON.stringify(formInput.price), from: nft.owner, to: "MARKETPLACE", date:new Date().toLocaleDateString(), hash: transaction.hash, tokenid: nft.tokenId }),
-      reselltxn()
-    )
+    await transaction.wait().then(
+    setResellTxn({event: "RELIST", price: JSON.stringify(formInput.price), from: nft.owner, to: "MARKETPLACE", date:new Date().toLocaleDateString(), hash: transaction.hash, tokenid: nft.tokenId }),
+      console.log(resellTxn),
+    reselltxn())
+    router.push('/myProfile')
     
     }
     catch(err){
       console.log(err)
     }
-    router.push('/')
+    router.push('/myProfile')
   }
  
 

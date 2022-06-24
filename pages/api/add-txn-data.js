@@ -25,13 +25,20 @@ export default async function handler(req, res) {
     let { error } = await supabase.from('txns').upsert(updates, {
       returning: 'minimal', // Don't return the value after inserting
     })
-    res.send("success");
     if (error) {
-      throw error
+      throw error;
     }
+    if (err) {
+      console.log(err);
+      res.sendStatus(500);
+      return;
+  }
+    res.send("success");
+ return;
 
   } catch (error) {
-    res.send(error);
+    res.status(404).send(error);
     console.log(error);
+    return;
   }
 }
