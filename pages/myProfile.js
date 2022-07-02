@@ -186,6 +186,7 @@ const [user, setUser] = useState({ role: 'false', name: '', address: '', pfp: ''
             <Image
               borderRadius='full'
               boxSize='150px'
+              fallbackSrc='https://via.placeholder.com/150'
               src={user.pfp}alt='Dan Abramov' />
             <Text fontSize='md'>{user.name}</Text>
             {
@@ -269,7 +270,7 @@ const [user, setUser] = useState({ role: 'false', name: '', address: '', pfp: ''
                 <Image
                   borderRadius='full'
                   boxSize='150px'
-
+                  fallbackSrc='https://via.placeholder.com/150'
                   src={user.pfp}alt='Dan Abramov' />
 
                 <Text fontSize='md'>{user.name}</Text>

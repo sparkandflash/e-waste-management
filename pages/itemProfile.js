@@ -148,7 +148,8 @@ console.log(transaction);
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader >Resell {nft.name} ? </ModalHeader>
+          {resellItem ? <ModalHeader >resell {nft.name} ? </ModalHeader>: <ModalHeader >Transfer {nft.name} ?</ModalHeader> }
+            
             <ModalCloseButton />
             <ModalBody > 
 {resellItem ?  <ResellNFT   {...nft} /> : <TransferNFT {...nft}/> }
