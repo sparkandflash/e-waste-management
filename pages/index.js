@@ -1,9 +1,10 @@
 import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
-import { Text, Stack, Heading,Grid, GridItem, Center,useToast, Box, Button, Spacer, Image } from "@chakra-ui/react";
+import { Text, Stack, Heading, Grid, GridItem, Center, useToast, Box, Button, Spacer, Image } from "@chakra-ui/react";
 import axios from 'axios'
 import Web3Modal from 'web3modal'
 import Header from '../components/Header';
+import { useRouter } from 'next/router'
 import { connectWallet, getCurrentWalletConnected } from "../utils/interact.js";
 import {
   marketplaceAddress
@@ -12,18 +13,42 @@ import {
 import NFTMarketplace from '../artifacts/contracts/NFTMarketplace.sol/NFTMarketplace.json'
 
 export default function Home() {
+  const router = useRouter();
   const addToast = useToast();
   const [nfts, setNfts] = useState([]);
-  const[waiting, setWaiting] =useState(false);
+  const [waiting, setWaiting] = useState(false);
   const [loadingState, setLoadingState] = useState('not-loaded');
   const [walletAddress, setWallet] = useState("");
-  const [buyTxn, setBuyTxn] = useState({event: "", price: "",from: "", to: "", data:"", hash: "", tokenid: "" })
- 
+  const [buyTxn, setBuyTxn] = useState({ event: "", price: "", from: "", to: "", data: "", hash: "", tokenid: "" })
+  async function viewTxn(tokenId) {
+    router.push(`https://rinkeby.etherscan.io/token/0x97e33fff71b84a8a6a483a925d437cd7294f009c?a=${tokenId}`)
+  }
+  async function checkNetwork() {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+    const network = await provider.getNetwork();
+    const chainId = network.chainId;
+    if (chainId != 4) {
+      addToast({
+        title: "Alert!.",
+        description: "you are on wrong network, please connect to rinkeby network",
+        status: "warning",
+        duration: 9000,
+        isClosable: true,
+      })
+    }
+
+    else {
+      console.log("connected to rinkeby network, chainid : 4")
+    }
+
+
+  }
   async function loadNFTs() {
     try {
       const provider = new ethers.providers.JsonRpcProvider("https://rinkeby.infura.io/v3/fafcbeac5aeb44218662cb082acbdc66")
 
-    //   const provider = new ethers.providers.JsonRpcProvider("HTTP://127.0.0.1:7545")
+      //   const provider = new ethers.providers.JsonRpcProvider("HTTP://127.0.0.1:7545")
 
       const contract = new ethers.Contract(marketplaceAddress, NFTMarketplace.abi, provider)
       const data = await contract.fetchMarketItems()
@@ -45,124 +70,140 @@ export default function Home() {
       }))
 
       setNfts(items);
-    //  newItem(items);
+      //  newItem(items);
       setLoadingState('loaded')
     }
     catch (err) {
-      console.log(err);
       addToast({
         title: "Alert!.",
-        description: "you are on wrong network, please connect to rinkeby",
-        status: "warning",
+        description: "there is some issue with fetching the items.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      })
+      console.log(err);
+
+    }
+  }
+  /*  
+     async function newItem(items) {
+        
+               try {
+                 const res = await fetch(
+                   '/api/add-item',
+                   {
+                     body: JSON.stringify(items),
+                     headers: {
+                       'Content-Type': 'application/json'
+                     },
+                     method: 'POST',
+                     setTimeout: 10000
+                   }
+                 ).then(res => res.json())
+                   .then(data => {
+           
+                   
+           
+                     if (data == "success") {
+                     console.log("success")
+                     }
+                     else {
+                     console.log(data);
+                     
+                     };
+                   })
+               }
+               catch (ex) {
+                 console.log(ex)
+               }
+           
+             }
+ */
+  async function buytxn() {
+
+    try {
+      const res = await fetch(
+        '/api/add-txn-data',
+        {
+          body: JSON.stringify({ buyTxn }),
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          method: 'POST',
+          setTimeout: 10000
+        }
+      ).then(res => res.json())
+        .then(data => {
+
+
+
+          if (data == "success") {
+            console.log("success")
+          }
+          else {
+            console.log(data);
+
+          };
+        })
+    }
+    catch (ex) {
+
+      console.log(ex)
+
+    }
+
+  }
+  async function buyNft(nft) {
+    /* needs the user to sign the transaction, so will use Web3Provider and sign it */
+    try {
+      setWaiting(true);
+      const web3Modal = new Web3Modal()
+      const connection = await web3Modal.connect()
+      const provider = new ethers.providers.Web3Provider(connection)
+      const signer = provider.getSigner()
+      const contract = new ethers.Contract(marketplaceAddress, NFTMarketplace.abi, signer)
+
+      /* user will be prompted to pay the asking proces to complete the transaction */
+      const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')
+      const transaction = await contract.createMarketSale(nft.tokenId, {
+        value: price
+      })
+      await transaction.wait()
+        console.log(transaction.logs),setBuyTxn({ event: "SALE", price: JSON.stringify(price), from: nft.seller, to: walletAddress, date: new Date().toLocaleDateString(), hash: transaction.hash, tokenid: nft.tokenId }),
+        console.log(buyTxn),
+        buytxn(),
+        loadNFTs(),
+        addToast({
+          title: "Alert!.",
+          description: "Transacation successful!",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        })
+       ,
+        setWaiting(false)
+    }
+    catch (err) {
+      console.log(err);
+      setWaiting(false);
+      addToast({
+        title: "Alert!.",
+        description: "Transacation failed",
+        status: "error",
         duration: 9000,
         isClosable: true,
       })
     }
   }
- /*  
-    async function newItem(items) {
-       
-              try {
-                const res = await fetch(
-                  '/api/add-item',
-                  {
-                    body: JSON.stringify(items),
-                    headers: {
-                      'Content-Type': 'application/json'
-                    },
-                    method: 'POST',
-                    setTimeout: 10000
-                  }
-                ).then(res => res.json())
-                  .then(data => {
-          
-                  
-          
-                    if (data == "success") {
-                    console.log("success")
-                    }
-                    else {
-                    console.log(data);
-                    
-                    };
-                  })
-              }
-              catch (ex) {
-                console.log(ex)
-              }
-          
-            }
-*/
-async function buytxn() {
-       
-  try {
-    const res = await fetch(
-      '/api/add-txn-data',
-      {
-        body: JSON.stringify({buyTxn}),
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        method: 'POST',
-        setTimeout: 10000
-      }
-    ).then(res => res.json())
-      .then(data => {
-
-      
-
-        if (data == "success") {
-        console.log("success")
-        }
-        else {
-        console.log(data);
-        
-        };
-      })
-  }
-  catch (ex) {
-    console.log(ex)
-  }
-
-}
-  async function buyNft(nft) {
-    /* needs the user to sign the transaction, so will use Web3Provider and sign it */
-    try{
-    setWaiting(true);
-    const web3Modal = new Web3Modal()
-    const connection = await web3Modal.connect()
-    const provider = new ethers.providers.Web3Provider(connection)
-    const signer = provider.getSigner()
-    const contract = new ethers.Contract(marketplaceAddress, NFTMarketplace.abi, signer)
-
-    /* user will be prompted to pay the asking proces to complete the transaction */
-    const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')
-    const transaction = await contract.createMarketSale(nft.tokenId, {
-      value: price
-    })
-    await transaction.wait().then(
-    console.log(transaction.logs),
-    setBuyTxn({event: "SALE", price: JSON.stringify(price), from: nft.seller, to: walletAddress, date:new Date().toLocaleDateString(), hash: transaction.hash, tokenid: nft.tokenId }),
-    console.log(buyTxn),
-    buytxn(),
-    loadNFTs(),
-    
-    setWaiting(false))
-    }
-    catch (err) {
-      console.log(err);
-      setWaiting(false);
-    }
-  }
   useEffect(async () => {
-   
+
     const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
-// Prompt user for account connections
-await provider.send("eth_requestAccounts", []);
-const signer = provider.getSigner();
+    // Prompt user for account connections
+    await provider.send("eth_requestAccounts", []);
+    const signer = provider.getSigner();
     setWallet(await signer.getAddress());
-    
-    loadNFTs()
+    checkNetwork();
+    loadNFTs();
   }, [])
   if (loadingState === 'loaded' && !nfts.length) return (<div><Header /><h1>No Items listed</h1></div>)
 
@@ -171,49 +212,52 @@ const signer = provider.getSigner();
       <Header />
       <Box padding={5}>
         <Center>
-        <Box rounded={6} width='max-content' border='1px' borderColor='gray.300' padding='15px'>
-        
-        <Grid templateColumns='repeat(3, 1fr)' gap={2}>
-            {
-              nfts.map((nft, i) => (
-                <div key={i}>
+          <Box rounded={6} width='max-content' border='1px' borderColor='gray.300' padding='15px'>
 
-                  <Box  w="fit-content" bg='gray.300' padding={3} m={1} rounded={6}>
+            <Grid templateColumns='repeat(3, 1fr)' gap={2}>
+              {
+                nfts.map((nft, i) => (
+                  <div key={i}>
 
-                    <Box  w="280px" bg='gray.700' p={1} marginBottom='12px' rounded={6}>
-                      <Image rounded={6} boxSize='280px'
-                        objectFit='cover' src={nft.image} />
+                    <Box w="fit-content" bg='gray.300' padding={3} m={1} rounded={6}>
+
+                      <Box w="280px" bg='gray.700' p={1} marginBottom='12px' rounded={6}>
+                        <Image rounded={6} boxSize='280px'
+                          objectFit='cover' src={nft.image} />
+                      </Box>
+
+                      <Spacer />
+                      <Box width='280px' key={i} bg='gray.100' p={4} rounded={6}>
+                        <Text color='black.500'> {nft.name}  </Text>
+                        <Text color='black.500'> id -{nft.tokenId}  </Text>
+                        <p color='black.500'>desc- {nft.description}  </p>
+
+                        <Text isTruncated color='black.500'>seller - {nft.seller}  </Text>
+
+                        <Text color='black.500' padding={1}>Price - {nft.price} eth </Text>
+
+                      </Box>
+
+                      <Box marginTop='10px' >
+                        <Button disabled={waiting} onClick={() => buyNft(nft)}>
+                          buy
+                        </Button>
+                        <Button m={3} disabled={waiting} onClick={() => viewTxn(nft.tokenId)}>
+                          ViewTxns
+                        </Button>
+                      </Box>
+
+
                     </Box>
 
-                    <Spacer />
-                    <Box width='280px' key={i} bg='gray.100' p={4} rounded={6}>
-                      <Text  color='black.500'> {nft.name}  </Text>
-                      <Text  color='black.500'> id -{nft.tokenId}  </Text>
-                      <p  color='black.500'>desc- {nft.description}  </p>
-
-                      <Text isTruncated color='black.500'>seller - {nft.seller}  </Text>
-                    
-                      <Text  color='black.500' padding={1}>Price - {nft.price} eth </Text>
-
-                    </Box>
-                   
-                    <Box marginTop='10px' >
-                    <Button disabled={waiting} onClick={() => buyNft(nft)}>
-                      buy
-                    </Button>
-                  </Box>
 
 
-                  </Box>
-                  
+                  </div>
 
-
-                </div>
-
-              ))
-            }
-          </Grid>
-        </Box>
+                ))
+              }
+            </Grid>
+          </Box>
         </Center>
       </Box>
     </div>

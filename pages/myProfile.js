@@ -40,31 +40,37 @@ const [user, setUser] = useState({ role: 'false', name: '', address: '', pfp: ''
       network: "mainnet",
       cacheProvider: true,
     })
-    const connection = await web3Modal.connect()
-    const provider = new ethers.providers.Web3Provider(connection)
-    const signer = provider.getSigner()
-
-    const marketplaceContract = new ethers.Contract(marketplaceAddress, NFTMarketplace.abi, signer)
-    const data = await marketplaceContract.fetchMyNFTs()
-
-    const items = await Promise.all(data.map(async i => {
-      const tokenURI = await marketplaceContract.tokenURI(i.tokenId)
-      const meta = await axios.get(tokenURI)
-      let price = ethers.utils.formatUnits(i.price.toString(), 'ether')
-      let item = {
-        price,
-        tokenId: i.tokenId.toNumber(),
-        seller: i.seller,
-        owner: i.owner,
-        image: meta.data.image,
-        name: meta.data.name,
-        description: meta.data.description,
-        tokenURI
+    try{  
+      const connection = await web3Modal.connect()
+      const provider = new ethers.providers.Web3Provider(connection)
+      const signer = provider.getSigner()
+  
+      const marketplaceContract = new ethers.Contract(marketplaceAddress, NFTMarketplace.abi, signer)
+      const data = await marketplaceContract.fetchMyNFTs()
+  
+      const items = await Promise.all(data.map(async i => {
+        const tokenURI = await marketplaceContract.tokenURI(i.tokenId)
+        const meta = await axios.get(tokenURI)
+        let price = ethers.utils.formatUnits(i.price.toString(), 'ether')
+        let item = {
+          price,
+          tokenId: i.tokenId.toNumber(),
+          seller: i.seller,
+          owner: i.owner,
+          image: meta.data.image,
+          name: meta.data.name,
+          description: meta.data.description,
+          tokenURI
+        }
+        return item
+      }))
+      setNfts(items)
+      setLoadingState('loaded')}
+      catch (err)
+      {
+        console.log(err)
       }
-      return item
-    }))
-    setNfts(items)
-    setLoadingState('loaded')
+
   }
 
 
@@ -79,13 +85,7 @@ const [user, setUser] = useState({ role: 'false', name: '', address: '', pfp: ''
     }
     catch (err) {
       setConstatus(false);
-      addToast({
-        title: "Alert!.",
-        description: "you are on wrong network, please connect to rinkeby",
-        status: "warning",
-        duration: 9000,
-        isClosable: true,
-      })
+     
     }
   };
  
@@ -119,7 +119,27 @@ const [user, setUser] = useState({ role: 'false', name: '', address: '', pfp: ''
   }
   //if user is unregistered, that is, do an if else to check whther wallet address is stored in db or not
 
+  async function checkNetwork(){
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
 
+    const network = await provider.getNetwork();
+    const chainId = network.chainId;
+    if(chainId != 4) {
+      addToast({
+        title: "Alert!.",
+        description: "you are on wrong network, please connect to rinkeby network",
+        status: "warning",
+        duration: 9000,
+        isClosable: true,
+      })
+    }
+
+    else {
+      console.log("connected to rinkeby network, chainid : 4")
+    }
+    
+
+  }
 
 
 
@@ -169,7 +189,7 @@ const [user, setUser] = useState({ role: 'false', name: '', address: '', pfp: ''
     console.log(walletAddress);
     address = JSON.stringify(address);
     isRegistered(address);
-    
+    checkNetwork();
     addWalletListener();
   
 
@@ -308,6 +328,7 @@ const [user, setUser] = useState({ role: 'false', name: '', address: '', pfp: ''
                      
                      <Box bg='gray.400'  rounded={6} marginBlockStart={3} marginBlockEnd={3} p={3}>
                      <Text color='black.500'> {nft.name}  </Text>
+                     <Text color='black.500'> {nft.tokenId}  </Text>
                         <p color='black.500'>desc- {nft.description}  </p>
 
 
