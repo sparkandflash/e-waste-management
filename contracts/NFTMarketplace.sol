@@ -36,7 +36,7 @@ contract NFTMarketplace is ERC721URIStorage{
 
     address[] citizens;
 
-    constructor() ERC721("EwasteItem", "EWI") {
+    constructor() ERC721("MarketplaceToken", "NMT") {
         owner = payable(msg.sender);
     }
 

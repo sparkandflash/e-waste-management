@@ -101,7 +101,7 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
  
                                      onChange={e => updateFormInput({ ...formInput, name: e.target.value })}
                                  />
-                                 <Text color="blue.50" fontWeight="bold" mb='8px'>address:</Text>
+                                 <Text color="blue.50" fontWeight="bold" mb='8px'>bio:</Text>
                                  <Textarea
  
                                      placeholder="user address"

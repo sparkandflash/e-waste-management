@@ -21,7 +21,7 @@ export default function Home() {
   const [walletAddress, setWallet] = useState("");
   const [buyTxn, setBuyTxn] = useState({ event: "", price: "", from: "", to: "", data: "", hash: "", tokenid: "" })
   async function viewTxn(tokenId) {
-    router.push(`https://rinkeby.etherscan.io/token/0x97e33fff71b84a8a6a483a925d437cd7294f009c?a=${tokenId}`)
+    router.push(`https://rinkeby.etherscan.io/token/contract address=${tokenId}`)
   }
   async function checkNetwork() {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -46,7 +46,7 @@ export default function Home() {
   }
   async function loadNFTs() {
     try {
-      const provider = new ethers.providers.JsonRpcProvider("https://rinkeby.infura.io/v3/fafcbeac5aeb44218662cb082acbdc66")
+      const provider = new ethers.providers.JsonRpcProvider("provider url like infura")
 
       //   const provider = new ethers.providers.JsonRpcProvider("HTTP://local host ip")
 

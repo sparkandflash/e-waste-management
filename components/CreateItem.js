@@ -96,7 +96,7 @@ function CreateItem() {
 
 
                 <Text color="blue.100" fontSize="2xl" fontWeight="bold" align="center">
-                    Hello citizen!
+                    Hello user!
                 </Text>
                 <Center height='max-content'>
                     <VStack>

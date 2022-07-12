@@ -219,7 +219,7 @@ const [user, setUser] = useState({ role: 'false', name: '', address: '', pfp: ''
 
         </Center>
 
-        <Text borderRadius='lg' borderWidth='1px' padding=" 10px" fontSize='md'>wallet address: {walletAddress}<br />physical address : {user.address}</Text>
+        <Text borderRadius='lg' borderWidth='1px' padding=" 10px" fontSize='md'>wallet address: {walletAddress}<br />bio : {user.address}</Text>
       </Box>
       <Container p={3}>
         <Center>
@@ -260,7 +260,7 @@ const [user, setUser] = useState({ role: 'false', name: '', address: '', pfp: ''
         <Box h="90px" p={3}>
 
           <Text color="black.500" fontSize="2xl" fontWeight="bold" align="center">
-            E-waste management system using blockchain
+            welcome user
           </Text>
           <Center h="40">
             <VStack>
@@ -301,7 +301,7 @@ const [user, setUser] = useState({ role: 'false', name: '', address: '', pfp: ''
 
             </Center>
 
-            <Text borderRadius='lg' borderWidth='1px' padding=" 10px" fontSize='md'>wallet address: {walletAddress}<br />physical address : {user.address}</Text>
+            <Text borderRadius='lg' borderWidth='1px' padding=" 10px" fontSize='md'>wallet address: {walletAddress}<br />bio : {user.address}</Text>
           </Box>
           <Container p={3}>
             <Center>
