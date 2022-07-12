@@ -13,7 +13,7 @@ module.exports = {
       // Infura
       url: `https://polygon-mumbai.g.alchemy.com/v2`,
     // url: "https://rpc-mumbai.matic.today",
-      accounts: [`6`]
+      accounts: [``]
     },
     */
     rinkeby: {

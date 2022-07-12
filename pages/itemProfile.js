@@ -31,7 +31,7 @@ export default function ItemProfile() {
   const [waiting, setWaiting] = useState(false);
   const [nft, setNft] = useState([])
   const [resellItem, setResellItem] = useState(true)
-  const [recevier, setRecevier] = useState([])
+
   const { id, tokenURI } = router.query
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -52,7 +52,7 @@ export default function ItemProfile() {
   }
 
   async function viewTxn(tokenId) {
-    router.push(`https://rinkeby.etherscan.io/token/0x97e33fff71b84a8a6a483a925d437cd7294f009c?a=${tokenId}`)
+    router.push(`https://rinkeby.etherscan.io/token/-contract-address?a=${tokenId}`)
   }
 
   async function loadNFTs() {

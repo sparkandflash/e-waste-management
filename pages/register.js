@@ -17,7 +17,7 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
      const [formInput, updateFormInput] = useState({ role: false, name: '', address: '' })
      const [uploading, setUploading] = useState(false)
      const [walletAdd, setWallet] = useState("");
-     const [user, setUser] = useState({ role: false, name: '', address: '' , fileUrl: '', wallet: '' });
+
      const [status, setStatus] = useState("");
      const router = useRouter()
  

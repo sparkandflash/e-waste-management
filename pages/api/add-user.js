@@ -1,3 +1,4 @@
+/*
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -35,3 +36,4 @@ export default async function handler(req, res){
 console.log(error)
     }
   }
+  */

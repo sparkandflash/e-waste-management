@@ -30,7 +30,7 @@ const [user, setUser] = useState({ role: 'false', name: '', address: '', pfp: ''
   const [connected, setConnected] = useState("");
   const [walletAddress, setWallet] = useState("");
   const [status, setStatus] = useState("");
-  const [mintrole, setMintRole] = useState(true);
+
 
 
 

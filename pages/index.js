@@ -5,7 +5,7 @@ import axios from 'axios'
 import Web3Modal from 'web3modal'
 import Header from '../components/Header';
 import { useRouter } from 'next/router'
-import { connectWallet, getCurrentWalletConnected } from "../utils/interact.js";
+
 import {
   marketplaceAddress
 } from '../config'
@@ -85,40 +85,7 @@ export default function Home() {
 
     }
   }
-  /*  
-     async function newItem(items) {
-        
-               try {
-                 const res = await fetch(
-                   '/api/add-item',
-                   {
-                     body: JSON.stringify(items),
-                     headers: {
-                       'Content-Type': 'application/json'
-                     },
-                     method: 'POST',
-                     setTimeout: 10000
-                   }
-                 ).then(res => res.json())
-                   .then(data => {
-           
-                   
-           
-                     if (data == "success") {
-                     console.log("success")
-                     }
-                     else {
-                     console.log(data);
-                     
-                     };
-                   })
-               }
-               catch (ex) {
-                 console.log(ex)
-               }
-           
-             }
- */
+
   async function buytxn() {
 
     try {

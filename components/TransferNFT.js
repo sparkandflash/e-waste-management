@@ -15,43 +15,10 @@ import NFTMarketplace from '../artifacts/contracts/NFTMarketplace.sol/NFTMarketp
 export default function TransferNFT(nft) {
   const [formInput, updateFormInput] = useState({ Address: '' })
   const router = useRouter()
-  const [transferTxn, setTransferTxn] = useState({event: "", price: "",from: "", to: "", data:"", hash: "", tokenid: "" })
+ 
  
   const { Address } = formInput
 
-
-  async function transfertxn() {
-       
-    try {
-      const res = await fetch(
-        '/api/add-txn-data',
-        {
-          body: JSON.stringify({transferTxn}),
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          method: 'POST',
-          setTimeout: 10000
-        }
-      ).then(res => res.json())
-        .then(data => {
-  
-        
-  
-          if (data == "success") {
-          console.log("success")
-          }
-          else {
-          console.log(data);
-          
-          };
-        })
-    }
-    catch (ex) {
-      console.log(ex)
-    }
-  
-  }
   
  
   async function transferToken() {
@@ -74,8 +41,7 @@ export default function TransferNFT(nft) {
     try{
     const transaction = await contract.transferItem(nft.tokenId, Address)
     await transaction.wait().then(
-      setResellTxn({event: "TRANSFER", price: JSON.stringify(formInput.price), from: nft.owner, to: Address, date:new Date().toLocaleDateString(), hash: transaction.hash, tokenid: nft.tokenId }),
-      transfertxn()
+    
     )
 
     
