@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
-import { Text, Stack, Heading, Grid, GridItem, Center, useToast, Box, Button, Spacer, Image } from "@chakra-ui/react";
+import { Text, Stack, Heading, Grid, GridItem, ButtonGroup, Center, useToast, Box, Button, Spacer, Image } from "@chakra-ui/react";
 import axios from 'axios'
 import Web3Modal from 'web3modal'
 import Header from '../components/Header';
@@ -153,6 +153,45 @@ export default function Home() {
     }
 
   }
+  async function delistNft(nft) {
+    /* needs the user to sign the transaction, so will use Web3Provider and sign it */
+    try {
+      setWaiting(true);
+      const web3Modal = new Web3Modal()
+      const connection = await web3Modal.connect()
+      const provider = new ethers.providers.Web3Provider(connection)
+      const signer = provider.getSigner()
+      const contract = new ethers.Contract(marketplaceAddress, NFTMarketplace.abi, signer)
+
+      /* user will be prompted to pay the asking proces to complete the transaction */
+
+      const transaction = await contract.deListItem(nft.tokenId)
+      await transaction.wait()
+       
+   
+        loadNFTs(),
+        addToast({
+          title: "Alert!.",
+          description: "delisting successful!",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        })
+       ,
+        setWaiting(false)
+    }
+    catch (err) {
+      console.log(err);
+      setWaiting(false);
+      addToast({
+        title: "Alert!.",
+        description: "delisting failed",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      })
+    }
+  }
   async function buyNft(nft) {
     /* needs the user to sign the transaction, so will use Web3Provider and sign it */
     try {
@@ -238,14 +277,17 @@ export default function Home() {
 
                       </Box>
 
-                      <Box marginTop='10px' >
+                      <ButtonGroup marginBlockStart={3} gap='2'>
                         <Button disabled={waiting} onClick={() => buyNft(nft)}>
                           buy
                         </Button>
-                        <Button m={3} disabled={waiting} onClick={() => viewTxn(nft.tokenId)}>
+                        <Button disabled={waiting} onClick={() => delistNft(nft)}>
+                          delist
+                        </Button>
+                        <Button  disabled={waiting} onClick={() => viewTxn(nft.tokenId)}>
                           ViewTxns
                         </Button>
-                      </Box>
+                        </ButtonGroup>
 
 
                     </Box>
