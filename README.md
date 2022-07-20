@@ -19,24 +19,26 @@ required softwares:
 clone this repo on vs code and open the folder of the extracted site
 
 # confrim node is installed 
-sh
+
+sh``
 node -v
+``
 
-sh
+sh``
 npm -v
-
+``
 
 
 # install using NPM 
-sh
+sh``
 npm install
+``
 
+## Start the local Hardhat node (this contract is already deployed on rinkeby network, confirm network setting in hardhat config file before deploying to localhost)
 
-
-2. Start the local Hardhat node (this contract is already deployed on rinkeby network, confirm network setting in hardhat config file before deploying to localhost)
-
-sh
+sh``
 npx hardhat node
+``
 
 ## import an account from local host network which has preassigned testnet tokens to metamask 
 
@@ -44,26 +46,27 @@ npx hardhat node
 
 3. With the network running, deploy the contracts to the local network in a separate terminal window
 
-sh
+sh``
 npx hardhat run scripts/deploy.js --network localhost 
+``
 
 if deploying to other networks: 
-sh
+sh``
 npx hardhat run scripts/deploy.js --network name(rinbkeby/mumbai/mainnet/matic/ganache) 
-
+``
 
 4. Start the app (verify rpc url, its different for local host and other networks ) 
 
-
+sh``
 npm run dev
-
+``
 
 
 ### Configuration
 
 To deploy to Polygon test or main networks, update the configurations located in _hardhat.config.js_ to use a private key and, optionally, deploy to a private RPC like Infura.
 
-javascript
+javascript``
 require("@nomiclabs/hardhat-waffle");
 const fs = require('fs');
 const privateKey = fs.readFileSync(".secret").toString().trim() || "01234567890123456789";
@@ -100,14 +103,14 @@ module.exports = {
     }
   }
 };
-
+``
 if using ganache start the ganache program and add this network : 
-js
+js``
  ganache: {
       url: "HTTP://127.0.0.1:7545",
       accounts: ['ganche_account_private_key']
     }
-
+``
 url is obtained from ganche app when local blockchain is started.
 also change network in metmask to testnet (rinkeby) or to localhost or to ganache.
 If using Infura, update _.infuraid_ with your [Infura](https://infura.io/) project ID.
