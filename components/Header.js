@@ -16,7 +16,7 @@ function Header() {
         <header>
             <Flex margin="6px"  minWidth='max-content' alignItems='center' gap='2' p={2}>
             <Box p='2'>
-    <Heading size='md'>XYZ NFT marketplace</Heading>
+    <Heading size='md'>e-waste marketplace</Heading>
   </Box>
   <Spacer />
   <ButtonGroup gap='2'>
